@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<title>Իմ բյուջեն</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f2f7; --card: #ffffff; --text: #111827; --muted: #6b7280;
+    --line: #e5e7eb; --soft: #eef0f4; --accent: #4f46e5;
+    --red: #ef4444; --green: #16a34a; --orange: #ea580c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000; --card: #1c1c1e; --text: #f5f5f7; --muted: #9ca3af;
+      --line: #2c2c2e; --soft: #2c2c2e; --accent: #818cf8;
+      --green: #22c55e; --orange: #fb923c;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Noto Sans Armenian", "Segoe UI", Roboto, sans-serif;
+    font-size: 16px; line-height: 1.35; }
+  button, input { font-family: inherit; font-size: inherit; color: inherit; }
+  button { cursor: pointer; }
+
+  .shell { max-width: 480px; margin: 0 auto; min-height: 100vh;
+    padding: calc(env(safe-area-inset-top) + 16px) 16px calc(96px + env(safe-area-inset-bottom)); }
+  .title { font-size: 30px; font-weight: 700; margin: 4px 0 16px; letter-spacing: -0.3px; }
+  .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; margin: 22px 4px 8px; }
+  .hint { font-size: 13px; color: var(--muted); margin: 8px 4px 0; }
+  .card { background: var(--card); border-radius: 16px; padding: 14px 16px; }
+  .stack > * + * { margin-top: 10px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .bold { font-weight: 600; }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .spacer { flex: 1; }
+
+  .hello { display: flex; align-items: center; gap: 12px; margin: 4px 0 16px; }
+  .hello .title { margin: 0; font-size: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .balance { background: linear-gradient(135deg, #4f46e5, #2563eb); color: #fff; border-radius: 22px; padding: 20px; }
+  .balance .big { font-size: 34px; font-weight: 700; margin: 6px 0 14px; letter-spacing: -0.5px; }
+  .balance .stats { display: flex; justify-content: space-between; gap: 8px; }
+  .balance .stats div span { display: block; font-size: 11px; opacity: .8; }
+  .balance .stats div b { font-size: 14px; }
+
+  .actions { display: flex; gap: 12px; margin-top: 14px; }
+  .action { flex: 1; border: 0; border-radius: 14px; padding: 14px; font-weight: 600; font-size: 16px; }
+  .action.green { background: rgba(34,197,94,.15); color: var(--green); }
+  .action.red { background: rgba(239,68,68,.15); color: var(--red); }
+
+  .icon { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-size: 19px; flex: none; }
+  .bar { height: 6px; background: var(--soft); border-radius: 99px; overflow: hidden; margin: 10px 0 6px; }
+  .bar > div { height: 100%; border-radius: 99px; transition: width .25s; }
+
+  .list { background: var(--card); border-radius: 16px; overflow: hidden; }
+  .list > .item { padding: 12px 16px; }
+  .list > * + * { border-top: 1px solid var(--line); }
+  .list-btn { width: 100%; text-align: left; background: none; border: 0; padding: 14px 16px; display: flex; align-items: center; gap: 10px; font-size: 16px; }
+  .accent { color: var(--accent); }
+  .danger { color: var(--red); }
+  .list-btn:disabled { opacity: .4; cursor: default; }
+
+  .field { width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; outline: none; }
+  .field:focus { border-color: var(--accent); }
+  .field.big { font-size: 24px; font-weight: 600; }
+  .field:disabled { opacity: .75; background: var(--soft); }
+  .name-input { border: 0; background: transparent; font-weight: 600; font-size: 16px; outline: none; flex: 1; min-width: 0; padding: 2px 0; }
+  .name-input:focus { border-bottom: 1px solid var(--accent); }
+
+  .btn { border: 0; border-radius: 12px; padding: 14px; font-weight: 600; width: 100%; font-size: 16px; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:disabled { opacity: .45; cursor: default; }
+  .btn-small { border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 600; background: var(--accent); color: #fff; white-space: nowrap; }
+  .btn-ghost { border: 0; border-radius: 10px; padding: 9px 12px; font-weight: 600; background: var(--soft); white-space: nowrap; font-size: 14px; }
+  .step { width: 38px; height: 32px; border-radius: 9px; border: 0; background: var(--soft); font-size: 18px; font-weight: 600; }
+  .step:disabled { opacity: .35; cursor: default; }
+
+  .tabbar { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; max-width: 480px; display: flex;
+    background: var(--card); border-top: 1px solid var(--line);
+    padding: 6px 2px calc(6px + env(safe-area-inset-bottom)); z-index: 5; }
+  .tab { flex: 1; border: 0; background: none; color: var(--muted); font-size: 10.5px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 0; min-width: 0; }
+  .tab span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tab.active { color: var(--accent); }
+  .tab svg { width: 24px; height: 24px; }
+
+  .auth { max-width: 420px; margin: 0 auto; padding: calc(env(safe-area-inset-top) + 20px) 24px 40px; }
+  .auth-top { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+  .logo { width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg,#4f46e5,#2563eb); display: grid; place-items: center; font-size: 36px; margin: 0 auto 14px; }
+  .seg { display: flex; background: var(--soft); border-radius: 11px; padding: 4px; gap: 4px; margin: 26px 0 16px; }
+  .seg button { flex: 1; border: 0; background: none; padding: 9px; border-radius: 8px; font-weight: 600; font-size: 15px; }
+  .seg button.on { background: var(--accent); color: #fff; }
+  .error { color: var(--red); font-size: 14px; margin: 10px 2px 0; }
+  .ok { color: var(--green); font-size: 14px; margin: 8px 2px 0; }
+  .demo-note { margin-top: 26px; font-size: 13px; color: var(--muted); text-align: center; }
+
+  /* Դրոշներ */
+  .flags { display: flex; gap: 8px; }
+  .flag-btn { flex: 1; border: 2px solid transparent; background: var(--card); border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; }
+  .flag-btn.on { border-color: var(--accent); color: var(--accent); }
+  .flag-btn svg { width: 42px; height: 28px; border-radius: 4px; box-shadow: 0 0 0 1px rgba(0,0,0,.12); display: block; }
+  .flags.compact .flag-btn { padding: 8px 4px; font-size: 12px; gap: 4px; }
+  .flags.compact .flag-btn svg { width: 30px; height: 20px; }
+  .btn-small:disabled { opacity: .4; cursor: default; }
+  .settings-btn { justify-content: space-between; font-weight: 600; }
+  .flags.mini { gap: 6px; }
+  .flags.mini .flag-btn { flex: none; padding: 5px; border-radius: 9px; background: transparent; }
+  .flags.mini .flag-btn svg { width: 30px; height: 20px; }
+
+  /* Ավատար */
+  .avatar { border-radius: 50%; background: rgba(79,70,229,.15); display: grid; place-items: center; overflow: hidden; flex: none; color: var(--accent); font-weight: 700; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .profile-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 22px 16px 18px; }
+  .photo-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .file-label { position: relative; overflow: hidden; }
+  .file-label input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+  /* Բաժանորդագրություն */
+  .sub-row { display: flex; gap: 8px; align-items: center; }
+  .sub-row .field { flex: 1; }
+  .send { width: 46px; height: 46px; flex: none; border-radius: 12px; background: var(--accent); color: #fff; display: grid; place-items: center; text-decoration: none; }
+  .send svg { width: 20px; height: 20px; }
+  .send.off { opacity: .45; pointer-events: none; }
+  .send.done { background: var(--green); pointer-events: none; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.42); display: flex; align-items: flex-end; justify-content: center; z-index: 20; animation: fade .15s; }
+  .overlay.center { align-items: center; padding: 24px; }
+  .sheet { width: 100%; max-width: 480px; max-height: 92vh; overflow: auto; background: var(--bg); border-radius: 20px 20px 0 0;
+    padding: 8px 16px calc(24px + env(safe-area-inset-bottom)); animation: up .2s ease-out; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 0 6px; position: sticky; top: 0; background: var(--bg); z-index: 1; }
+  .sheet-head b { font-size: 17px; }
+  .link { border: 0; background: none; color: var(--accent); font-size: 16px; padding: 6px 2px; }
+  .link.bold { font-weight: 600; }
+  .link:disabled { opacity: .4; cursor: default; }
+  .dialog { width: 100%; max-width: 320px; background: var(--card); border-radius: 16px; padding: 20px 18px 14px; text-align: center; animation: pop .15s; }
+  .dialog h3 { margin: 0 0 6px; font-size: 17px; }
+  .dialog p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+  .dialog .row { gap: 10px; }
+  .dialog .btn { padding: 12px; }
+  .btn-soft { background: var(--soft); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .pick { width: 100%; background: none; border: 0; display: flex; align-items: center; gap: 12px; padding: 12px 16px; text-align: left; font-size: 16px; }
+  .check { margin-left: auto; color: var(--accent); font-weight: 700; visibility: hidden; }
+  .pick.on .check { visibility: visible; }
+  .sel-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--muted); display: grid; place-items: center; color: #fff; font-size: 14px; flex: none; }
+  .sel-dot.on { background: var(--red); border-color: var(--red); }
+  .tx-del { border: 0; background: none; color: var(--muted); font-size: 18px; padding: 4px 6px; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty div { font-size: 44px; margin-bottom: 10px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  @keyframes up { from { transform: translateY(40px); opacity: .6 } to { transform: none; opacity: 1 } }
+  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes pop { from { transform: scale(.95); opacity: 0 } to { transform: none; opacity: 1 } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="modal"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // =====================================================================
+  // ԿԱՐԳԱՎՈՐՈՒՄ. բաժանորդագրության Google Form-ի նախալրացված հղումը։
+  // Google Forms → ⋮ → «Get pre-filled link», Email դաշտում գրիր EMAIL,
+  // սեղմիր «Get link» և հղումը տեղադրիր այստեղ։ Դատարկ է՝ ուղարկումն անջատված է։
+  const SUBSCRIBE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdtXFgKSNQmHJMG6Jit0XcRxgOEc0EnDPMNYXr7UYuFSHLmFA/viewform?usp=pp_url&entry.1077623573=EMAIL';
+  // =====================================================================
+
+  // ---------- Պահպանում (բրաուզերում) ----------
+  const mem = {};
+  const S = {
+    get(k) { try { const v = localStorage.getItem(k); if (v !== null) return v; } catch (e) {} return k in mem ? mem[k] : null; },
+    set(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) {} },
+    del(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} }
+  };
+
+  // ---------- Թարգմանություններ ----------
+  const I18N = {
+    hy: {
+      'app.name': 'Իմ բյուջեն', 'app.tagline': 'Կառավարիր եկամուտներդ և ծախսերդ',
+      'auth.login': 'Մուտք', 'auth.register': 'Գրանցում', 'auth.username': 'Մուտքանուն', 'auth.password': 'Գաղտնաբառ',
+      'auth.confirm': 'Կրկնիր գաղտնաբառը', 'auth.doLogin': 'Մուտք գործել', 'auth.doRegister': 'Գրանցվել',
+      'auth.rules': 'Մուտքանուն՝ առնվազն 3 նիշ, գաղտնաբառ՝ առնվազն 6 նիշ',
+      'auth.demo': 'Դեմո տարբերակ. հաշիվը և տվյալները պահվում են միայն այս բրաուզերում։',
+      'err.shortUsername': 'Մուտքանունը պետք է լինի առնվազն 3 նիշ։',
+      'err.invalidUsername': 'Մուտքանունում թույլատրվում են միայն տառեր, թվեր և _ . - նշանները։',
+      'err.shortPassword': 'Գաղտնաբառը պետք է լինի առնվազն 6 նիշ։', 'err.mismatch': 'Գաղտնաբառերը չեն համընկնում։',
+      'err.exists': 'Այս մուտքանունով օգտատեր արդեն կա։', 'err.wrong': 'Սխալ մուտքանուն կամ գաղտնաբառ։',
+      'tab.home': 'Գլխավոր', 'tab.tx': 'Գործարքներ', 'tab.summary': 'Ամփոփում', 'tab.env': 'Ծրարներ', 'tab.profile': 'Պրոֆիլ',
+      'home.hello': 'Բարև, {name}', 'home.total': 'Ընդհանուր մնացորդ', 'home.today': 'Այսօր ծախսվել',
+      'home.monthIncome': 'Ամսվա եկամուտ', 'home.monthSpent': 'Ամսվա ծախս', 'home.income': '＋ Եկամուտ', 'home.expense': '－ Ծախս',
+      'home.envelopes': 'Ծրարներ', 'home.noEnv': 'Ծրարներ չկան։ Ավելացրու «Ծրարներ» բաժնում։',
+      'env.ofIncome': '{p}% եկամտից', 'env.spentOf': 'Ծախսված՝ {a} / {b}',
+      'env.fixed': 'Պարտադիր ծախսեր', 'env.food': 'Սնունդ', 'env.savings': 'Խնայողություն', 'env.fun': 'Զվարճանք',
+      'env.other': 'Այլ', 'env.new': 'Նոր ծրար', 'env.unnamed': 'Առանց անվան',
+      'tx.empty': 'Գործարքներ դեռ չկան', 'tx.emptyHint': 'Ավելացրու առաջին եկամուտը կամ ծախսը գլխավոր էջից',
+      'tx.income': 'Եկամուտ', 'tx.expense': 'Ծախս', 'tx.split': 'Բաշխված է {n} ծրարի',
+      'day.today': 'Այսօր', 'day.yesterday': 'Երեկ',
+      'sum.month': 'Այս ամիս', 'sum.income': 'Եկամուտ', 'sum.spent': 'Ծախս', 'sum.diff': 'Տարբերություն',
+      'sum.byEnv': 'Ծախսերն ըստ ծրարների', 'sum.noSpend': 'Այս ամիս ծախսեր դեռ չկան', 'sum.week': 'Վերջին 7 օրը',
+      'sum.max': 'Առավելագույնը՝ {v}', 'sum.center': 'Ծախս',
+      'env.distributed': 'Բաշխված՝', 'env.free': 'Ազատ՝', 'env.split': 'Եկամտի բաշխում', 'env.none': 'Ծրարներ չկան',
+      'env.full': 'Ամբողջ եկամուտը բաշխված է ✓ Որևէ ծրարի տոկոսը մեծացնելու համար նախ պակասեցրու մեկ ուրիշինը։',
+      'env.left': 'Դեռ {p}% ազատ է։ Բաշխիր այն ծրարների միջև, որ ընդհանուրը լինի 100%։',
+      'env.actions': 'Գործողություններ', 'env.add': '＋ Ավելացնել ծրար', 'env.select': '☑︎ Ընտրել և ջնջել',
+      'env.deleteSel': '🗑 Ջնջել ընտրվածները ({n})', 'env.cancel': '✕ Չեղարկել',
+      'env.hintSel': 'Սեղմիր այն ծրարների վրա, որոնք ուզում ես ջնջել։',
+      'env.hint': 'Ծրարի անունը փոխելու համար սեղմիր դրա վրա։ Ծրարը ջնջելիս կջնջվի նաև դրա պատմությունը։',
+      'profile.changePhoto': 'Փոխել նկարը', 'profile.addPhoto': 'Ավելացնել նկար', 'profile.removePhoto': 'Հեռացնել',
+      'profile.photoErr': 'Նկարը չհաջողվեց բացել։', 'profile.name': 'Անուն', 'profile.namePh': 'Քո անունը',
+      'profile.save': 'Պահպանել', 'profile.saved': 'Պահպանված է ✓', 'profile.login': 'Մուտքանուն՝ @{u}',
+      'profile.lang': 'Լեզու', 'profile.stats': 'Վիճակագրություն', 'stats.incomes': 'Եկամուտներ', 'stats.expenses': 'Ծախսեր',
+      'stats.envelopes': 'Ծրարներ', 'stats.balance': 'Ընդհանուր մնացորդ',
+      'profile.sub': 'Բաժանորդագրություն', 'profile.subHint': 'Թողիր էլ. հասցեդ՝ ծրագրի նորությունները ստանալու համար։',
+      'profile.emailPh': 'Էլ. հասցե', 'profile.subDone': 'Բաժանորդագրված եք ✓', 'profile.badEmail': 'Մուտքագրիր ճիշտ էլ. հասցե։',
+      'profile.subOff': 'Ուղարկումը դեռ միացված չէ։', 'profile.logout': '⎋ Ելք հաշվից',
+      'profile.note': 'Սա փորձնական վեբ տարբերակ է։ Տվյալները մնում են միայն այս սարքի այս բրաուզերում։',
+      'm.cancel': 'Չեղարկել', 'm.save': 'Պահպանել', 'm.amount': 'Գումար', 'm.delete': 'Ջնջել', 'm.ok': 'Լավ',
+      'inc.title': 'Նոր եկամուտ', 'inc.amountPh': 'օր.՝ 400000', 'inc.notePh': 'Նշում (աշխատավարձ, բոնուս...)',
+      'inc.split': 'Բաշխում ծրարների միջև', 'inc.noPercent': 'Ծրարներում տոկոսներ սահմանված չեն։',
+      'exp.title': 'Նոր ծախս', 'exp.amountPh': 'օր.՝ 5000', 'exp.notePh': 'Նշում (մթերք, տաքսի...)', 'exp.from': 'Որ ծրարից',
+      'exp.balance': 'Ծրարի մնացորդ', 'exp.over': '⚠️ Ծախսը գերազանցում է ծրարի մնացորդը',
+      'exp.noEnvTitle': 'Ծրարներ չկան', 'exp.noEnvMsg': 'Ծախս ավելացնելու համար նախ ստեղծիր ծրար «Ծրարներ» բաժնում։',
+      'c.delIncTitle': 'Ջնջե՞լ եկամուտը', 'c.delIncMsg': 'Եկամուտը կհանվի բոլոր ծրարներից։',
+      'c.delExpTitle': 'Ջնջե՞լ ծախսը', 'c.delExpMsg': 'Գումարը կվերադառնա ծրարին։',
+      'c.delEnvTitle': 'Ջնջե՞լ {n} ծրար', 'c.delEnvMsg': 'Ծրարների հետ կջնջվեն նաև դրանց եկամուտներն ու ծախսերը։',
+      'c.logoutTitle': 'Դուրս գա՞լ հաշվից', 'c.logoutMsg': 'Տվյալներդ կպահպանվեն, և կարող ես նորից մուտք գործել։', 'c.logoutOk': 'Ելք',
+      'profile.settings': '⚙️ Կարգավորումներ', 'set.title': 'Կարգավորումներ', 'set.done': 'Պատրաստ', 'set.photo': 'Նկար',
+      'set.username': 'Մուտքանուն', 'set.change': 'Փոխել', 'set.usernameHint': 'Մուտքանունը կարելի է փոխել 7 օրը մեկ անգամ։',
+      'set.usernameLocked': 'Մուտքանունը կրկին կարող ես փոխել {date}-ից ({d} օր հետո)։',
+      'set.usernameSame': 'Սա արդեն քո մուտքանունն է։', 'set.usernameSaved': 'Մուտքանունը փոխված է ✓',
+      'set.password': 'Գաղտնաբառ', 'set.curPass': 'Ընթացիկ գաղտնաբառ', 'set.newPass': 'Նոր գաղտնաբառ',
+      'set.newPass2': 'Կրկնիր նոր գաղտնաբառը', 'set.passSave': 'Փոխել գաղտնաբառը', 'set.passSaved': 'Գաղտնաբառը փոխված է ✓',
+      'err.curPass': 'Ընթացիկ գաղտնաբառը սխալ է։', 'err.samePass': 'Նոր գաղտնաբառը պետք է տարբերվի ընթացիկից։'
+    },
+    ru: {
+      'app.name': 'Мой бюджет', 'app.tagline': 'Управляйте доходами и расходами',
+      'auth.login': 'Вход', 'auth.register': 'Регистрация', 'auth.username': 'Логин', 'auth.password': 'Пароль',
+      'auth.confirm': 'Повторите пароль', 'auth.doLogin': 'Войти', 'auth.doRegister': 'Зарегистрироваться',
+      'auth.rules': 'Логин — от 3 символов, пароль — от 6 символов',
+      'auth.demo': 'Демо-версия: аккаунт и данные хранятся только в этом браузере.',
+      'err.shortUsername': 'Логин должен содержать не менее 3 символов.',
+      'err.invalidUsername': 'В логине допустимы только буквы, цифры и символы _ . -',
+      'err.shortPassword': 'Пароль должен содержать не менее 6 символов.', 'err.mismatch': 'Пароли не совпадают.',
+      'err.exists': 'Пользователь с таким логином уже существует.', 'err.wrong': 'Неверный логин или пароль.',
+      'tab.home': 'Главная', 'tab.tx': 'Операции', 'tab.summary': 'Сводка', 'tab.env': 'Конверты', 'tab.profile': 'Профиль',
+      'home.hello': 'Привет, {name}', 'home.total': 'Общий остаток', 'home.today': 'Потрачено сегодня',
+      'home.monthIncome': 'Доход за месяц', 'home.monthSpent': 'Расход за месяц', 'home.income': '＋ Доход', 'home.expense': '－ Расход',
+      'home.envelopes': 'Конверты', 'home.noEnv': 'Конвертов нет. Добавьте их в разделе «Конверты».',
+      'env.ofIncome': '{p}% от дохода', 'env.spentOf': 'Потрачено: {a} / {b}',
+      'env.fixed': 'Обязательные расходы', 'env.food': 'Еда', 'env.savings': 'Накопления', 'env.fun': 'Развлечения',
+      'env.other': 'Прочее', 'env.new': 'Новый конверт', 'env.unnamed': 'Без названия',
+      'tx.empty': 'Операций пока нет', 'tx.emptyHint': 'Добавьте первый доход или расход на главной',
+      'tx.income': 'Доход', 'tx.expense': 'Расход', 'tx.split': 'Распределено по конвертам: {n}',
+      'day.today': 'Сегодня', 'day.yesterday': 'Вчера',
+      'sum.month': 'Этот месяц', 'sum.income': 'Доход', 'sum.spent': 'Расход', 'sum.diff': 'Разница',
+      'sum.byEnv': 'Расходы по конвертам', 'sum.noSpend': 'В этом месяце расходов пока нет', 'sum.week': 'Последние 7 дней',
+      'sum.max': 'Максимум: {v}', 'sum.center': 'Расход',
+      'env.distributed': 'Распределено:', 'env.free': 'Свободно:', 'env.split': 'Распределение дохода', 'env.none': 'Конвертов нет',
+      'env.full': 'Весь доход распределён ✓ Чтобы увеличить процент конверта, сначала уменьшите другой.',
+      'env.left': 'Свободно ещё {p}%. Распределите их, чтобы в сумме было 100%.',
+      'env.actions': 'Действия', 'env.add': '＋ Добавить конверт', 'env.select': '☑︎ Выбрать и удалить',
+      'env.deleteSel': '🗑 Удалить выбранные ({n})', 'env.cancel': '✕ Отмена',
+      'env.hintSel': 'Нажмите на конверты, которые хотите удалить.',
+      'env.hint': 'Нажмите на название, чтобы изменить его. При удалении конверта удаляется и его история.',
+      'profile.changePhoto': 'Изменить фото', 'profile.addPhoto': 'Добавить фото', 'profile.removePhoto': 'Удалить',
+      'profile.photoErr': 'Не удалось открыть фото.', 'profile.name': 'Имя', 'profile.namePh': 'Ваше имя',
+      'profile.save': 'Сохранить', 'profile.saved': 'Сохранено ✓', 'profile.login': 'Логин: @{u}',
+      'profile.lang': 'Язык', 'profile.stats': 'Статистика', 'stats.incomes': 'Доходы', 'stats.expenses': 'Расходы',
+      'stats.envelopes': 'Конверты', 'stats.balance': 'Общий остаток',
+      'profile.sub': 'Подписка', 'profile.subHint': 'Оставьте e-mail, чтобы получать новости приложения.',
+      'profile.emailPh': 'E-mail', 'profile.subDone': 'Вы подписаны ✓', 'profile.badEmail': 'Введите корректный e-mail.',
+      'profile.subOff': 'Отправка пока не подключена.', 'profile.logout': '⎋ Выйти из аккаунта',
+      'profile.note': 'Это тестовая веб-версия. Данные хранятся только в этом браузере на этом устройстве.',
+      'm.cancel': 'Отмена', 'm.save': 'Сохранить', 'm.amount': 'Сумма', 'm.delete': 'Удалить', 'm.ok': 'OK',
+      'inc.title': 'Новый доход', 'inc.amountPh': 'напр. 400000', 'inc.notePh': 'Заметка (зарплата, бонус...)',
+      'inc.split': 'Распределение по конвертам', 'inc.noPercent': 'В конвертах не заданы проценты.',
+      'exp.title': 'Новый расход', 'exp.amountPh': 'напр. 5000', 'exp.notePh': 'Заметка (продукты, такси...)', 'exp.from': 'Из какого конверта',
+      'exp.balance': 'Остаток конверта', 'exp.over': '⚠️ Расход превышает остаток конверта',
+      'exp.noEnvTitle': 'Конвертов нет', 'exp.noEnvMsg': 'Сначала создайте конверт в разделе «Конверты».',
+      'c.delIncTitle': 'Удалить доход?', 'c.delIncMsg': 'Доход будет убран из всех конвертов.',
+      'c.delExpTitle': 'Удалить расход?', 'c.delExpMsg': 'Сумма вернётся в конверт.',
+      'c.delEnvTitle': 'Удалить конверты ({n})?', 'c.delEnvMsg': 'Вместе с конвертами удалятся их доходы и расходы.',
+      'c.logoutTitle': 'Выйти из аккаунта?', 'c.logoutMsg': 'Данные сохранятся, вы сможете войти снова.', 'c.logoutOk': 'Выйти',
+      'profile.settings': '⚙️ Настройки', 'set.title': 'Настройки', 'set.done': 'Готово', 'set.photo': 'Фото',
+      'set.username': 'Логин', 'set.change': 'Изменить', 'set.usernameHint': 'Логин можно менять один раз в 7 дней.',
+      'set.usernameLocked': 'Снова изменить логин можно с {date} (через {d} дн.).',
+      'set.usernameSame': 'Это уже ваш логин.', 'set.usernameSaved': 'Логин изменён ✓',
+      'set.password': 'Пароль', 'set.curPass': 'Текущий пароль', 'set.newPass': 'Новый пароль',
+      'set.newPass2': 'Повторите новый пароль', 'set.passSave': 'Сменить пароль', 'set.passSaved': 'Пароль изменён ✓',
+      'err.curPass': 'Текущий пароль неверный.', 'err.samePass': 'Новый пароль должен отличаться от текущего.'
+    },
+    en: {
+      'app.name': 'My Budget', 'app.tagline': 'Manage your income and expenses',
+      'auth.login': 'Log in', 'auth.register': 'Sign up', 'auth.username': 'Username', 'auth.password': 'Password',
+      'auth.confirm': 'Repeat password', 'auth.doLogin': 'Log in', 'auth.doRegister': 'Create account',
+      'auth.rules': 'Username: at least 3 characters, password: at least 6',
+      'auth.demo': 'Demo version: your account and data are stored only in this browser.',
+      'err.shortUsername': 'Username must be at least 3 characters.',
+      'err.invalidUsername': 'Username may contain only letters, digits and _ . -',
+      'err.shortPassword': 'Password must be at least 6 characters.', 'err.mismatch': 'Passwords do not match.',
+      'err.exists': 'A user with this username already exists.', 'err.wrong': 'Wrong username or password.',
+      'tab.home': 'Home', 'tab.tx': 'Transactions', 'tab.summary': 'Summary', 'tab.env': 'Envelopes', 'tab.profile': 'Profile',
+      'home.hello': 'Hi, {name}', 'home.total': 'Total balance', 'home.today': 'Spent today',
+      'home.monthIncome': 'Month income', 'home.monthSpent': 'Month spending', 'home.income': '＋ Income', 'home.expense': '－ Expense',
+      'home.envelopes': 'Envelopes', 'home.noEnv': 'No envelopes yet. Add them in the Envelopes tab.',
+      'env.ofIncome': '{p}% of income', 'env.spentOf': 'Spent: {a} / {b}',
+      'env.fixed': 'Essentials', 'env.food': 'Food', 'env.savings': 'Savings', 'env.fun': 'Fun',
+      'env.other': 'Other', 'env.new': 'New envelope', 'env.unnamed': 'Untitled',
+      'tx.empty': 'No transactions yet', 'tx.emptyHint': 'Add your first income or expense from Home',
+      'tx.income': 'Income', 'tx.expense': 'Expense', 'tx.split': 'Split into {n} envelopes',
+      'day.today': 'Today', 'day.yesterday': 'Yesterday',
+      'sum.month': 'This month', 'sum.income': 'Income', 'sum.spent': 'Spending', 'sum.diff': 'Difference',
+      'sum.byEnv': 'Spending by envelope', 'sum.noSpend': 'No spending this month yet', 'sum.week': 'Last 7 days',
+      'sum.max': 'Max: {v}', 'sum.center': 'Spent',
+      'env.distributed': 'Allocated:', 'env.free': 'Free:', 'env.split': 'Income split', 'env.none': 'No envelopes',
+      'env.full': 'All income is allocated ✓ To raise one envelope, lower another first.',
+      'env.left': '{p}% is still free. Split it so the total is 100%.',
+      'env.actions': 'Actions', 'env.add': '＋ Add envelope', 'env.select': '☑︎ Select & delete',
+      'env.deleteSel': '🗑 Delete selected ({n})', 'env.cancel': '✕ Cancel',
+      'env.hintSel': 'Tap the envelopes you want to delete.',
+      'env.hint': 'Tap a name to rename it. Deleting an envelope also deletes its history.',
+      'profile.changePhoto': 'Change photo', 'profile.addPhoto': 'Add photo', 'profile.removePhoto': 'Remove',
+      'profile.photoErr': "Couldn't open the image.", 'profile.name': 'Name', 'profile.namePh': 'Your name',
+      'profile.save': 'Save', 'profile.saved': 'Saved ✓', 'profile.login': 'Username: @{u}',
+      'profile.lang': 'Language', 'profile.stats': 'Statistics', 'stats.incomes': 'Incomes', 'stats.expenses': 'Expenses',
+      'stats.envelopes': 'Envelopes', 'stats.balance': 'Total balance',
+      'profile.sub': 'Subscription', 'profile.subHint': 'Leave your email to get news about the app.',
+      'profile.emailPh': 'Email', 'profile.subDone': "You're subscribed ✓", 'profile.badEmail': 'Enter a valid email address.',
+      'profile.subOff': "Sending isn't connected yet.", 'profile.logout': '⎋ Log out',
+      'profile.note': 'This is a test web version. Your data stays only in this browser on this device.',
+      'm.cancel': 'Cancel', 'm.save': 'Save', 'm.amount': 'Amount', 'm.delete': 'Delete', 'm.ok': 'OK',
+      'inc.title': 'New income', 'inc.amountPh': 'e.g. 400000', 'inc.notePh': 'Note (salary, bonus...)',
+      'inc.split': 'Split across envelopes', 'inc.noPercent': 'No percentages are set in envelopes.',
+      'exp.title': 'New expense', 'exp.amountPh': 'e.g. 5000', 'exp.notePh': 'Note (groceries, taxi...)', 'exp.from': 'From envelope',
+      'exp.balance': 'Envelope balance', 'exp.over': '⚠️ This exceeds the envelope balance',
+      'exp.noEnvTitle': 'No envelopes', 'exp.noEnvMsg': 'Create an envelope in the Envelopes tab first.',
+      'c.delIncTitle': 'Delete income?', 'c.delIncMsg': 'It will be removed from all envelopes.',
+      'c.delExpTitle': 'Delete expense?', 'c.delExpMsg': 'The amount returns to its envelope.',
+      'c.delEnvTitle': 'Delete {n} envelope(s)?', 'c.delEnvMsg': 'Their incomes and expenses will be deleted too.',
+      'c.logoutTitle': 'Log out?', 'c.logoutMsg': 'Your data stays saved; you can log in again.', 'c.logoutOk': 'Log out',
+      'profile.settings': '⚙️ Settings', 'set.title': 'Settings', 'set.done': 'Done', 'set.photo': 'Photo',
+      'set.username': 'Username', 'set.change': 'Change', 'set.usernameHint': 'You can change your username once every 7 days.',
+      'set.usernameLocked': 'You can change it again on {date} (in {d} days).',
+      'set.usernameSame': 'This is already your username.', 'set.usernameSaved': 'Username changed ✓',
+      'set.password': 'Password', 'set.curPass': 'Current password', 'set.newPass': 'New password',
+      'set.newPass2': 'Repeat new password', 'set.passSave': 'Change password', 'set.passSaved': 'Password changed ✓',
+      'err.curPass': 'Current password is incorrect.', 'err.samePass': 'New password must differ from the current one.'
+    }
+  };
+  const MONTHS = {
+    hy: ['հունվարի','փետրվարի','մարտի','ապրիլի','մայիսի','հունիսի','հուլիսի','օգոստոսի','սեպտեմբերի','հոկտեմբերի','նոյեմբերի','դեկտեմբերի'],
+    ru: ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'],
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December']
+  };
+  const WEEK = {
+    hy: ['Կիր','Երկ','Երք','Չրք','Հնգ','Ուրբ','Շբթ'],
+    ru: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+    en: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  };
+  const LANGS = [['hy', 'Հայերեն'], ['ru', 'Русский'], ['en', 'English']];
+
+  let lang = S.get('bb_lang');
+  if (!I18N[lang]) lang = 'hy';
+  const t = (key, vars) => {
+    let s = (I18N[lang] && I18N[lang][key]) || I18N.hy[key] || key;
+    if (vars) Object.keys(vars).forEach(k => { s = s.split('{' + k + '}').join(vars[k]); });
+    return s;
+  };
+  function setLang(l) {
+    if (!I18N[l]) return;
+    lang = l; S.set('bb_lang', l);
+    document.documentElement.lang = l;
+    document.title = t('app.name');
+    refresh();
+  }
+
+  // ---------- Դրոշներ (SVG) ----------
+  function flagSVG(code) {
+    if (code === 'hy') return '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#F2A800"/><rect width="30" height="13.34" fill="#0033A0"/><rect width="30" height="6.67" fill="#D90012"/></svg>';
+    if (code === 'ru') return '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#D52B1E"/><rect width="30" height="13.34" fill="#0039A6"/><rect width="30" height="6.67" fill="#FFFFFF"/></svg>';
+    let stripes = '';
+    for (let i = 0; i < 13; i++) stripes += '<rect y="' + (i * 20 / 13).toFixed(2) + '" width="30" height="' + (20 / 13 + 0.02).toFixed(2) + '" fill="' + (i % 2 ? '#FFFFFF' : '#B22234') + '"/>';
+    let stars = '';
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) stars += '<circle cx="' + (1.3 + c * 2.3).toFixed(1) + '" cy="' + (1.4 + r * 2.5).toFixed(1) + '" r=".45" fill="#FFFFFF"/>';
+    return '<svg viewBox="0 0 30 20">' + stripes + '<rect width="12" height="10.77" fill="#3C3B6E"/>' + stars + '</svg>';
+  }
+  function flagsHTML(mode) {
+    const mini = mode === 'mini';
+    return '<div class="flags' + (mode ? ' ' + mode : '') + '">' + LANGS.map(l =>
+      '<button class="flag-btn' + (lang === l[0] ? ' on' : '') + '" data-action="lang" data-id="' + l[0] + '" title="' + l[1] + '" aria-label="' + l[1] + '">' +
+      flagSVG(l[0]) + (mini ? '' : '<span>' + l[1] + '</span>') + '</button>').join('') + '</div>';
+  }
+
+  // ---------- Օգնականներ ----------
+  const COLORS = { blue: '#3b82f6', green: '#22c55e', purple: '#a855f7', orange: '#f97316', teal: '#14b8a6', pink: '#ec4899', red: '#ef4444', indigo: '#6366f1' };
+  const COLOR_KEYS = Object.keys(COLORS);
+  const uid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const amd = n => { const r = Math.round(n); return (r < 0 ? '−' : '') + Math.abs(r).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ֏'; };
+  const parseAmount = v => { const n = parseFloat(String(v).replace(/[,\s]/g, '')); return isFinite(n) && n > 0 ? n : null; };
+  const pad = n => String(n).padStart(2, '0');
+  const isoOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const todayISO = () => isoOf(new Date());
+  const toDate = iso => { const p = iso.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
+  const isThisMonth = iso => { const d = toDate(iso), n = new Date(); return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth(); };
+  const fmtDay = iso => {
+    if (iso === todayISO()) return t('day.today');
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    if (iso === isoOf(y)) return t('day.yesterday');
+    const d = toDate(iso), m = MONTHS[lang][d.getMonth()];
+    return lang === 'en' ? m + ' ' + d.getDate() + ', ' + d.getFullYear() : d.getDate() + ' ' + m + ', ' + d.getFullYear();
+  };
+  const colorOf = env => COLORS[env.color] || COLORS.blue;
+  const envName = env => env.name || t('env.' + (env.key || 'unnamed'));
+  const sum = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
+  const DAY_MS = 24 * 60 * 60 * 1000, USERNAME_COOLDOWN = 7 * DAY_MS;
+  const fmtDateTime = ts => {
+    const d = new Date(ts), m = MONTHS[lang][d.getMonth()], time = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    return lang === 'en' ? m + ' ' + d.getDate() + ', ' + d.getFullYear() + ', ' + time : d.getDate() + ' ' + m + ' ' + d.getFullYear() + ', ' + time;
+  };
+  const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
+
+  async function sha256(text) {
+    try {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {
+      let h = 5381; for (const ch of text) h = ((h * 33) ^ ch.codePointAt(0)) >>> 0;
+      return 'f' + h.toString(16);
+    }
+  }
+
+  // ---------- Տվյալներ ----------
+  function defaultData() {
+    // Սկզբնական ծրարները պահում են key, որ անունը թարգմանվի լեզուն փոխելիս (մինչև օգտատերը վերանվանի)
+    return {
+      envelopes: [
+        { id: uid(), key: 'fixed', name: '', percent: 50, icon: '🏠', color: 'blue' },
+        { id: uid(), key: 'food', name: '', percent: 15, icon: '🛒', color: 'green' },
+        { id: uid(), key: 'savings', name: '', percent: 20, icon: '💰', color: 'purple' },
+        { id: uid(), key: 'fun', name: '', percent: 10, icon: '🎮', color: 'orange' },
+        { id: uid(), key: 'other', name: '', percent: 5, icon: '📦', color: 'teal' }
+      ],
+      incomes: [], expenses: [],
+      profile: { displayName: '', avatar: '', subscribedEmail: '' }
+    };
+  }
+
+  function distribute(amount, envelopes) {
+    const active = envelopes.filter(e => e.percent > 0);
+    const total = sum(active, e => e.percent);
+    if (!(total > 0) || !(amount > 0)) return [];
+    let used = 0;
+    return active.map((e, i) => {
+      const part = i === active.length - 1 ? amount - used : Math.round(amount * e.percent / total);
+      used += part;
+      return { envelopeID: e.id, amount: part };
+    });
+  }
+
+  const state = { user: null, data: null, tab: 'home', authMode: 'login', authError: '', selecting: false, selected: new Set(), flash: {}, settingsOpen: false, sflash: {} };
+
+  const dataKey = u => 'bb_data_' + u.toLowerCase();
+  function loadData(user) {
+    let d = null;
+    try { const raw = S.get(dataKey(user)); if (raw) d = JSON.parse(raw); } catch (e) {}
+    if (!d) { d = defaultData(); S.set(dataKey(user), JSON.stringify(d)); }
+    if (!d.profile) d.profile = { displayName: '', avatar: '', subscribedEmail: '' };
+    return d;
+  }
+  const save = () => S.set(dataKey(state.user), JSON.stringify(state.data));
+
+  // ---------- Հաշվարկներ ----------
+  const envById = id => state.data.envelopes.find(e => e.id === id);
+  const allocated = env => sum(state.data.incomes, i => sum(i.allocations.filter(a => a.envelopeID === env.id), a => a.amount));
+  const spent = env => sum(state.data.expenses.filter(x => x.envelopeID === env.id), x => x.amount);
+  const balanceOf = env => allocated(env) - spent(env);
+  const totalBalance = () => sum(state.data.envelopes, balanceOf);
+  const totalPercent = () => sum(state.data.envelopes, e => e.percent);
+  const remaining = () => Math.max(0, 100 - totalPercent());
+  const todaySpent = () => sum(state.data.expenses.filter(x => x.date === todayISO()), x => x.amount);
+  const monthIncome = () => sum(state.data.incomes.filter(x => isThisMonth(x.date)), x => x.amount);
+  const monthSpent = () => sum(state.data.expenses.filter(x => isThisMonth(x.date)), x => x.amount);
+  const shownName = () => (state.data.profile.displayName || state.user);
+
+  // ---------- Մուտք / Գրանցում ----------
+  const loadUsers = () => { try { return JSON.parse(S.get('bb_users') || '[]'); } catch (e) { return []; } };
+  const saveUsers = u => S.set('bb_users', JSON.stringify(u));
+
+  async function register(username, password, confirm) {
+    const name = username.trim();
+    validateUsername(name);
+    if (password.length < 6) throw new Error('err.shortPassword');
+    if (password !== confirm) throw new Error('err.mismatch');
+    const users = loadUsers();
+    if (users.some(u => u.username.toLowerCase() === name.toLowerCase())) throw new Error('err.exists');
+    const salt = uid();
+    users.push({ username: name, salt: salt, hash: await sha256(salt + password), createdAt: Date.now() });
+    saveUsers(users);
+    startSession(name);
+  }
+
+  async function login(username, password) {
+    const name = username.trim();
+    const user = loadUsers().find(u => u.username.toLowerCase() === name.toLowerCase());
+    if (!user || user.hash !== await sha256(user.salt + password)) throw new Error('err.wrong');
+    startSession(user.username);
+  }
+
+  function validateUsername(name) {
+    if (name.length < 3) throw new Error('err.shortUsername');
+    if (!/^[\p{L}\p{N}_.\-]+$/u.test(name)) throw new Error('err.invalidUsername');
+  }
+
+  const currentAccount = () => loadUsers().find(u => u.username === state.user);
+  function usernameLockedUntil() {
+    const acc = currentAccount();
+    const until = acc && acc.usernameChangedAt ? acc.usernameChangedAt + USERNAME_COOLDOWN : 0;
+    return until > Date.now() ? until : 0;
+  }
+
+  /** Մուտքանունի փոփոխություն. 7 օրը մեկ անգամ, տվյալները տեղափոխվում են նոր անվան տակ */
+  function changeUsername(newName) {
+    const name = newName.trim();
+    if (usernameLockedUntil()) throw new Error('set.usernameHint');
+    if (name === state.user) throw new Error('set.usernameSame');
+    validateUsername(name);
+    const users = loadUsers();
+    const me = users.find(u => u.username === state.user);
+    if (!me) throw new Error('err.wrong');
+    if (users.some(u => u !== me && u.username.toLowerCase() === name.toLowerCase())) throw new Error('err.exists');
+    const oldKey = dataKey(state.user), newKey = dataKey(name);
+    me.username = name;
+    me.usernameChangedAt = Date.now();
+    saveUsers(users);
+    S.set(newKey, JSON.stringify(state.data));
+    if (oldKey !== newKey) S.del(oldKey);
+    state.user = name;
+    S.set('bb_session', name);
+  }
+
+  async function changePassword(current, next, repeat) {
+    const users = loadUsers();
+    const me = users.find(u => u.username === state.user);
+    if (!me || me.hash !== await sha256(me.salt + current)) throw new Error('err.curPass');
+    if (next.length < 6) throw new Error('err.shortPassword');
+    if (next !== repeat) throw new Error('err.mismatch');
+    if (await sha256(me.salt + next) === me.hash) throw new Error('err.samePass');
+    me.salt = uid();
+    me.hash = await sha256(me.salt + next);
+    saveUsers(users);
+  }
+
+  function startSession(name) {
+    state.user = name; state.data = loadData(name); state.tab = 'home'; state.flash = {};
+    S.set('bb_session', name);
+    render();
+  }
+
+  function logout() {
+    state.user = null; state.data = null; state.selecting = false; state.selected.clear();
+    state.authMode = 'login'; state.authError = ''; state.flash = {};
+    S.del('bb_session');
+    render();
+  }
+
+  // ---------- Պատկերակներ ----------
+  const ICONS = {
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+    tx: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1.2" fill="currentColor"/><circle cx="4" cy="12" r="1.2" fill="currentColor"/><circle cx="4" cy="18" r="1.2" fill="currentColor"/></svg>',
+    summary: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3v9h9a9 9 0 1 1-9-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>',
+    env: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 13l2.5-8h13L21 13v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/></svg>',
+    profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5a6.5 6.5 0 0 1 11 0"/></svg>',
+    send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+  };
+  const TABS = ['home', 'tx', 'summary', 'env', 'profile'];
+
+  function avatarHTML(size) {
+    const p = state.data.profile, name = shownName();
+    const inner = p.avatar ? '<img src="' + p.avatar + '" alt="">' : esc(Array.from(name)[0].toUpperCase());
+    return '<div class="avatar" style="width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.42) + 'px">' + inner + '</div>';
+  }
+
+  // ---------- Էկրաններ ----------
+  const root = document.getElementById('root');
+  const modal = document.getElementById('modal');
+
+  function render() {
+    document.documentElement.lang = lang;
+    document.title = t('app.name');
+    if (!state.user) { root.innerHTML = authView(); return; }
+    const views = { home: homeView, tx: txView, summary: summaryView, env: envView, profile: profileView };
+    root.innerHTML = '<div class="shell">' + views[state.tab]() + '</div>' +
+      '<nav class="tabbar">' + TABS.map(k =>
+        '<button class="tab' + (state.tab === k ? ' active' : '') + '" data-action="tab" data-id="' + k + '">' + ICONS[k] + '<span>' + t('tab.' + k) + '</span></button>'
+      ).join('') + '</nav>';
+  }
+
+  function authView() {
+    const reg = state.authMode === 'register';
+    return '<div class="auth">' +
+      '<div class="auth-top">' + flagsHTML('mini') + '</div>' +
+      '<div class="logo">👛</div>' +
+      '<div style="text-align:center"><div class="title" style="margin:0">' + t('app.name') + '</div><div class="muted">' + t('app.tagline') + '</div></div>' +
+      '<div class="seg"><button class="' + (!reg ? 'on' : '') + '" data-action="auth-mode" data-id="login">' + t('auth.login') + '</button>' +
+      '<button class="' + (reg ? 'on' : '') + '" data-action="auth-mode" data-id="register">' + t('auth.register') + '</button></div>' +
+      '<form id="auth-form" class="stack" autocomplete="off">' +
+      '<input class="field" name="username" placeholder="' + t('auth.username') + '" autocapitalize="none" autocorrect="off" spellcheck="false">' +
+      '<input class="field" name="password" type="password" placeholder="' + t('auth.password') + '">' +
+      (reg ? '<input class="field" name="confirm" type="password" placeholder="' + t('auth.confirm') + '">' : '') +
+      (state.authError ? '<div class="error">⚠️ ' + esc(t(state.authError)) + '</div>' : '') +
+      '<button class="btn btn-primary" type="submit" style="margin-top:16px">' + (reg ? t('auth.doRegister') : t('auth.doLogin')) + '</button>' +
+      (reg ? '<div class="hint" style="text-align:center">' + t('auth.rules') + '</div>' : '') +
+      '</form>' +
+      '<div class="demo-note">' + t('auth.demo') + '</div>' +
+      '</div>';
+  }
+
+  function homeView() {
+    const envs = state.data.envelopes;
+    return '<div class="hello"><button data-action="tab" data-id="profile" style="border:0;background:none;padding:0">' + avatarHTML(44) + '</button>' +
+      '<div class="title">' + esc(t('home.hello', { name: shownName() })) + '</div></div>' +
+      '<div class="balance"><div style="opacity:.85;font-size:14px">' + t('home.total') + '</div>' +
+      '<div class="big">' + amd(totalBalance()) + '</div>' +
+      '<div class="stats"><div><span>' + t('home.today') + '</span><b>' + amd(todaySpent()) + '</b></div>' +
+      '<div><span>' + t('home.monthIncome') + '</span><b>' + amd(monthIncome()) + '</b></div>' +
+      '<div><span>' + t('home.monthSpent') + '</span><b>' + amd(monthSpent()) + '</b></div></div></div>' +
+      '<div class="actions"><button class="action green" data-action="open-income">' + t('home.income') + '</button>' +
+      '<button class="action red" data-action="open-expense">' + t('home.expense') + '</button></div>' +
+      '<div class="label">' + t('home.envelopes') + '</div>' +
+      (envs.length ? '<div class="stack">' + envs.map(envCard).join('') + '</div>' : '<div class="card muted">' + t('home.noEnv') + '</div>');
+  }
+
+  function envCard(env) {
+    const a = allocated(env), s = spent(env), b = a - s;
+    const p = a > 0 ? Math.min(Math.max(s / a, 0), 1) : 0;
+    const c = colorOf(env);
+    return '<div class="card"><div class="row">' +
+      '<div class="icon" style="background:' + c + '26">' + esc(env.icon) + '</div>' +
+      '<div><div class="bold">' + esc(envName(env)) + '</div><div class="small muted">' + t('env.ofIncome', { p: env.percent }) + '</div></div>' +
+      '<div class="spacer"></div><div class="bold" style="' + (b < 0 ? 'color:var(--red)' : '') + '">' + amd(b) + '</div></div>' +
+      '<div class="bar"><div style="width:' + (p * 100) + '%;background:' + (p > 0.85 ? 'var(--red)' : c) + '"></div></div>' +
+      '<div class="small muted">' + t('env.spentOf', { a: amd(s), b: amd(a) }) + '</div></div>';
+  }
+
+  function txView() {
+    const items = state.data.incomes.map(i => ({ kind: 'income', x: i }))
+      .concat(state.data.expenses.map(e => ({ kind: 'expense', x: e })));
+    if (!items.length) {
+      return '<div class="title">' + t('tab.tx') + '</div><div class="empty"><div>🗂️</div><b>' + t('tx.empty') + '</b><p>' + t('tx.emptyHint') + '</p></div>';
+    }
+    items.sort((p, q) => (q.x.date.localeCompare(p.x.date)) || ((q.x.createdAt || 0) - (p.x.createdAt || 0)));
+    const groups = [];
+    items.forEach(it => {
+      const last = groups[groups.length - 1];
+      if (last && last.day === it.x.date) last.items.push(it); else groups.push({ day: it.x.date, items: [it] });
+    });
+    return '<div class="title">' + t('tab.tx') + '</div>' + groups.map(g =>
+      '<div class="label">' + fmtDay(g.day) + '</div><div class="list">' + g.items.map(txRow).join('') + '</div>'
+    ).join('');
+  }
+
+  function txRow(it) {
+    if (it.kind === 'income') {
+      const i = it.x;
+      return '<div class="item row"><div class="icon" style="background:rgba(34,197,94,.15)">⬇️</div>' +
+        '<div style="min-width:0"><div>' + esc(i.note || t('tx.income')) + '</div><div class="small muted">' + t('tx.split', { n: i.allocations.length }) + '</div></div>' +
+        '<div class="spacer"></div><b style="color:var(--green);white-space:nowrap">+' + amd(i.amount) + '</b>' +
+        '<button class="tx-del" data-action="del-income" data-id="' + i.id + '" aria-label="' + t('m.delete') + '">🗑</button></div>';
+    }
+    const e = it.x, env = envById(e.envelopeID);
+    const c = env ? colorOf(env) : COLORS.red;
+    return '<div class="item row"><div class="icon" style="background:' + c + '26">' + esc(env ? env.icon : '➖') + '</div>' +
+      '<div style="min-width:0"><div>' + esc(e.note || (env ? envName(env) : t('tx.expense'))) + '</div><div class="small muted">' + esc(env ? envName(env) : '') + '</div></div>' +
+      '<div class="spacer"></div><b style="white-space:nowrap">−' + amd(e.amount) + '</b>' +
+      '<button class="tx-del" data-action="del-expense" data-id="' + e.id + '" aria-label="' + t('m.delete') + '">🗑</button></div>';
+  }
+
+  function summaryView() {
+    const inc = monthIncome(), sp = monthSpent(), diff = inc - sp;
+    const slices = state.data.envelopes.map(env => ({
+      name: envName(env), color: colorOf(env),
+      amount: sum(state.data.expenses.filter(x => x.envelopeID === env.id && isThisMonth(x.date)), x => x.amount)
+    })).filter(s => s.amount > 0);
+
+    let donut = '<div class="card muted">' + t('sum.noSpend') + '</div>';
+    if (slices.length) {
+      const total = sum(slices, s => s.amount), r = 70, C = 2 * Math.PI * r;
+      let offset = 0;
+      const arcs = slices.map(s => {
+        const len = s.amount / total * C;
+        const gap = slices.length > 1 ? Math.min(3, len / 3) : 0;
+        const arc = '<circle cx="100" cy="100" r="' + r + '" fill="none" stroke="' + s.color + '" stroke-width="26" stroke-dasharray="' + Math.max(len - gap, 0.1) + ' ' + C + '" stroke-dashoffset="' + (-offset) + '"/>';
+        offset += len; return arc;
+      }).join('');
+      donut = '<div class="card"><svg viewBox="0 0 200 200" style="width:220px;display:block;margin:6px auto 12px"><g transform="rotate(-90 100 100)">' + arcs + '</g>' +
+        '<text x="100" y="96" text-anchor="middle" font-size="12" fill="currentColor" opacity=".6">' + esc(t('sum.center')) + '</text>' +
+        '<text x="100" y="116" text-anchor="middle" font-size="16" font-weight="700" fill="currentColor">' + amd(total) + '</text></svg>' +
+        '<div class="stack">' + slices.map(s => '<div class="row"><span class="legend-dot" style="background:' + s.color + '"></span><span>' + esc(s.name) + '</span><span class="spacer"></span><b>' + amd(s.amount) + '</b></div>').join('') + '</div></div>';
+    }
+
+    const days = [];
+    for (let k = 6; k >= 0; k--) {
+      const d = new Date(); d.setDate(d.getDate() - k);
+      const iso = isoOf(d);
+      days.push({ label: WEEK[lang][d.getDay()], amount: sum(state.data.expenses.filter(x => x.date === iso), x => x.amount) });
+    }
+    const max = Math.max(1, ...days.map(d => d.amount));
+    const bars = days.map((d, i) => {
+      const h = d.amount / max * 110, x = 12 + i * 41;
+      return '<rect x="' + x + '" y="' + (125 - h) + '" width="26" height="' + Math.max(h, 2) + '" rx="5" fill="' + (d.amount ? '#ef4444' : 'currentColor') + '" opacity="' + (d.amount ? 1 : .15) + '"/>' +
+        '<text x="' + (x + 13) + '" y="145" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">' + d.label + '</text>';
+    }).join('');
+
+    return '<div class="title">' + t('tab.summary') + '</div>' +
+      '<div class="label">' + t('sum.month') + '</div><div class="list">' +
+      '<div class="item row"><span>' + t('sum.income') + '</span><span class="spacer"></span><b style="color:var(--green)">' + amd(inc) + '</b></div>' +
+      '<div class="item row"><span>' + t('sum.spent') + '</span><span class="spacer"></span><b style="color:var(--red)">' + amd(sp) + '</b></div>' +
+      '<div class="item row"><span>' + t('sum.diff') + '</span><span class="spacer"></span><b style="color:' + (diff >= 0 ? 'var(--accent)' : 'var(--orange)') + '">' + amd(diff) + '</b></div></div>' +
+      '<div class="label">' + t('sum.byEnv') + '</div>' + donut +
+      '<div class="label">' + t('sum.week') + '</div><div class="card"><svg viewBox="0 0 300 150" style="width:100%;display:block">' + bars + '</svg>' +
+      '<div class="small muted" style="text-align:right">' + t('sum.max', { v: amd(Math.max(...days.map(d => d.amount))) }) + '</div></div>';
+  }
+
+  function envView() {
+    const tp = totalPercent(), rem = remaining(), sel = state.selecting;
+    const rows = state.data.envelopes.map(env => {
+      const c = colorOf(env);
+      if (sel) {
+        const on = state.selected.has(env.id);
+        return '<button class="pick" data-action="env-toggle" data-id="' + env.id + '">' +
+          '<span class="sel-dot' + (on ? ' on' : '') + '">' + (on ? '✓' : '') + '</span>' +
+          '<span class="icon" style="background:' + c + '26;width:32px;height:32px;font-size:16px">' + esc(env.icon) + '</span>' +
+          '<span>' + esc(envName(env)) + '</span><span class="spacer"></span><span class="muted">' + env.percent + '%</span></button>';
+      }
+      return '<div class="item"><div class="row">' +
+        '<div class="icon" style="background:' + c + '26;width:32px;height:32px;font-size:16px">' + esc(env.icon) + '</div>' +
+        '<input class="name-input" data-env-name="' + env.id + '" value="' + esc(envName(env)) + '" maxlength="40"></div>' +
+        '<div class="row" style="margin-top:10px"><span>' + t('env.ofIncome', { p: env.percent }) + '</span><span class="spacer"></span>' +
+        '<button class="step" data-action="env-minus" data-id="' + env.id + '"' + (env.percent <= 0 ? ' disabled' : '') + '>−</button>' +
+        '<button class="step" data-action="env-plus" data-id="' + env.id + '"' + (rem <= 0 ? ' disabled' : '') + '>+</button></div></div>';
+    }).join('');
+
+    const footer = rem === 0
+      ? '<div class="hint" style="color:var(--green)">' + t('env.full') + '</div>'
+      : '<div class="hint" style="color:var(--orange)">' + t('env.left', { p: rem }) + '</div>';
+
+    const actions = sel
+      ? '<button class="list-btn danger" data-action="env-delete-selected"' + (state.selected.size ? '' : ' disabled') + '>' + t('env.deleteSel', { n: state.selected.size }) + '</button>' +
+        '<button class="list-btn accent" data-action="env-select-cancel">' + t('env.cancel') + '</button>'
+      : '<button class="list-btn accent" data-action="env-add">' + t('env.add') + '</button>' +
+        '<button class="list-btn danger" data-action="env-select-start"' + (state.data.envelopes.length ? '' : ' disabled') + '>' + t('env.select') + '</button>';
+
+    return '<div class="title">' + t('tab.env') + '</div>' +
+      '<div class="card"><div class="row small"><span>' + t('env.distributed') + ' <b>' + tp + '%</b></span><span class="spacer"></span><span>' + t('env.free') + ' <b>' + rem + '%</b></span></div>' +
+      '<div class="bar" style="margin-bottom:0"><div style="width:' + Math.min(tp, 100) + '%;background:' + (tp >= 100 ? 'var(--green)' : 'var(--orange)') + '"></div></div></div>' +
+      '<div class="label">' + t('env.split') + '</div>' +
+      (rows ? '<div class="list">' + rows + '</div>' : '<div class="card muted">' + t('env.none') + '</div>') + footer +
+      '<div class="label">' + t('env.actions') + '</div><div class="list">' + actions + '</div>' +
+      '<div class="hint">' + (sel ? t('env.hintSel') : t('env.hint')) + '</div>';
+  }
+
+  function subscribeURL(email) {
+    if (!SUBSCRIBE_FORM_URL || SUBSCRIBE_FORM_URL.indexOf('EMAIL') < 0) return '';
+    return SUBSCRIBE_FORM_URL.replace('/viewform', '/formResponse').replace('EMAIL', encodeURIComponent(email)) +
+      (SUBSCRIBE_FORM_URL.indexOf('?') >= 0 ? '&' : '?') + 'submit=Submit';
+  }
+
+  function profileView() {
+    const d = state.data, p = d.profile, f = state.flash;
+    const sub = p.subscribedEmail
+      ? '<div class="sub-row"><input class="field" value="' + esc(p.subscribedEmail) + '" disabled>' +
+        '<span class="send done" aria-label="' + t('profile.subDone') + '">' + ICONS.check + '</span></div>' +
+        '<div class="ok">' + t('profile.subDone') + '</div>'
+      : '<div class="sub-row"><input class="field" id="sub-email" type="email" inputmode="email" autocapitalize="none" placeholder="' + t('profile.emailPh') + '">' +
+        '<a class="send off" id="sub-send" href="#" target="_blank" rel="noopener" aria-label="Send">' + ICONS.send + '</a></div>' +
+        (f.sub ? '<div class="' + (f.subOk ? 'ok' : 'error') + '">' + esc(t(f.sub)) + '</div>' : '');
+
+    return '<div class="title">' + t('tab.profile') + '</div>' +
+      '<div class="card profile-card">' + avatarHTML(96) +
+      '<div class="bold" style="font-size:20px;margin-top:12px">' + esc(shownName()) + '</div>' +
+      '<div class="small muted">@' + esc(state.user) + '</div></div>' +
+      '<div class="list" style="margin-top:12px"><button class="list-btn settings-btn accent" data-action="open-settings">' +
+      '<span>' + t('profile.settings') + '</span><span class="muted">›</span></button></div>' +
+
+      '<div class="label">' + t('profile.sub') + '</div>' +
+      '<div class="hint" style="margin:0 4px 8px">' + t('profile.subHint') + '</div>' + sub +
+
+      '<div class="label">' + t('profile.stats') + '</div><div class="list">' +
+      '<div class="item row"><span>' + t('stats.incomes') + '</span><span class="spacer"></span><span class="muted">' + d.incomes.length + '</span></div>' +
+      '<div class="item row"><span>' + t('stats.expenses') + '</span><span class="spacer"></span><span class="muted">' + d.expenses.length + '</span></div>' +
+      '<div class="item row"><span>' + t('stats.envelopes') + '</span><span class="spacer"></span><span class="muted">' + d.envelopes.length + '</span></div>' +
+      '<div class="item row"><span>' + t('stats.balance') + '</span><span class="spacer"></span><span class="muted">' + amd(totalBalance()) + '</span></div></div>' +
+      '<div class="label">&nbsp;</div><div class="list"><button class="list-btn danger" data-action="logout">' + t('profile.logout') + '</button></div>' +
+      '<div class="hint">' + t('profile.note') + '</div>';
+  }
+
+  // ---------- Կարգավորումների պատուհան ----------
+  function settingsHTML() {
+    const p = state.data.profile, f = state.sflash || {};
+    const lockedUntil = usernameLockedUntil();
+    const msg = sec => f.sec === sec ? '<div class="' + (f.ok ? 'ok' : 'error') + '">' + esc(t(f.key)) + '</div>' : '';
+    const usernameHint = lockedUntil
+      ? t('set.usernameLocked', { date: fmtDateTime(lockedUntil), d: Math.ceil((lockedUntil - Date.now()) / DAY_MS) })
+      : t('set.usernameHint');
+
+    return '<div class="overlay"><div class="sheet" id="settings-sheet">' +
+      '<div class="sheet-head"><span style="width:70px"></span><b>' + t('set.title') + '</b>' +
+      '<button class="link bold" data-action="close-modal" style="width:70px;text-align:right">' + t('set.done') + '</button></div>' +
+
+      '<div class="label">' + t('profile.lang') + '</div>' + flagsHTML('compact') +
+
+      '<div class="label">' + t('set.photo') + '</div>' +
+      '<div class="card row">' + avatarHTML(56) +
+      '<div class="photo-actions" style="margin:0;flex-wrap:wrap"><label class="btn-ghost file-label accent">📷 ' + (p.avatar ? t('profile.changePhoto') : t('profile.addPhoto')) +
+      '<input type="file" id="avatar-input" accept="image/*"></label>' +
+      (p.avatar ? '<button class="btn-ghost danger" data-action="avatar-remove">' + t('profile.removePhoto') + '</button>' : '') + '</div></div>' + msg('photo') +
+
+      '<div class="label">' + t('profile.name') + '</div>' +
+      '<div class="sub-row"><input class="field" id="display-name" maxlength="40" placeholder="' + t('profile.namePh') + '" value="' + esc(p.displayName || '') + '">' +
+      '<button class="btn-small" data-action="save-name">' + t('profile.save') + '</button></div>' + msg('name') +
+
+      '<div class="label">' + t('set.username') + '</div>' +
+      '<div class="sub-row"><input class="field" id="new-username" maxlength="30" value="' + esc(state.user) + '" autocapitalize="none" autocorrect="off" spellcheck="false"' + (lockedUntil ? ' disabled' : '') + '>' +
+      '<button class="btn-small" data-action="save-username"' + (lockedUntil ? ' disabled' : '') + '>' + t('set.change') + '</button></div>' +
+      msg('username') + '<div class="hint">' + usernameHint + '</div>' +
+
+      '<div class="label">' + t('set.password') + '</div><div class="stack">' +
+      '<input class="field" id="cur-pass" type="password" placeholder="' + t('set.curPass') + '">' +
+      '<input class="field" id="new-pass" type="password" placeholder="' + t('set.newPass') + '">' +
+      '<input class="field" id="new-pass2" type="password" placeholder="' + t('set.newPass2') + '">' +
+      '<button class="btn btn-primary" data-action="save-password">' + t('set.passSave') + '</button></div>' + msg('password') +
+      '</div></div>';
+  }
+
+  function renderSettings() {
+    const old = document.getElementById('settings-sheet');
+    const top = old ? old.scrollTop : 0;
+    modal.innerHTML = settingsHTML();
+    const sheet = document.getElementById('settings-sheet');
+    if (sheet) sheet.scrollTop = top;
+  }
+
+  function openSettings() { state.settingsOpen = true; state.sflash = {}; renderSettings(); }
+
+  /** Թարմացնում է էջը և, եթե բաց է, կարգավորումների պատուհանը */
+  function refresh() { render(); if (state.settingsOpen && state.user) renderSettings(); }
+
+  function updateSubscribeLink() {
+    const input = document.getElementById('sub-email'), a = document.getElementById('sub-send');
+    if (!input || !a) return;
+    const email = input.value.trim();
+    a.classList.toggle('off', !email);
+    const url = isEmail(email) ? subscribeURL(email) : '';
+    a.setAttribute('href', url || '#');
+  }
+
+  // ---------- Ավատար ----------
+  function loadAvatar(file) {
+    const fail = () => { state.sflash = { sec: 'photo', key: 'profile.photoErr' }; refresh(); };
+    if (!file || !/^image\//.test(file.type)) { fail(); return; }
+    const reader = new FileReader();
+    reader.onerror = fail;
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = fail;
+      img.onload = () => {
+        // Կտրում ենք քառակուսի և փոքրացնում 256×256, որ քիչ տեղ զբաղեցնի
+        const size = 256, c = document.createElement('canvas');
+        c.width = size; c.height = size;
+        const side = Math.min(img.width, img.height);
+        c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+        try { state.data.profile.avatar = c.toDataURL('image/jpeg', 0.85); save(); state.sflash = {}; }
+        catch (e) { state.sflash = { sec: 'photo', key: 'profile.photoErr' }; }
+        refresh();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ---------- Մոդալ պատուհաններ ----------
+  let onConfirm = null;
+  let expenseEnvID = null;
+
+  function closeModal() { modal.innerHTML = ''; onConfirm = null; state.settingsOpen = false; state.sflash = {}; }
+
+  function confirmDialog(title, message, okText, fn, single) {
+    onConfirm = fn;
+    modal.innerHTML = '<div class="overlay center"><div class="dialog"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p>' +
+      '<div class="row">' + (single ? '' : '<button class="btn btn-soft" data-action="close-modal">' + t('m.cancel') + '</button>') +
+      '<button class="btn ' + (single ? 'btn-primary' : 'btn-danger') + '" data-action="confirm-ok">' + esc(okText) + '</button></div></div></div>';
+  }
+
+  function sheetHead(titleKey, saveId, saveAction) {
+    return '<div class="sheet-head"><button class="link" data-action="close-modal">' + t('m.cancel') + '</button><b>' + t(titleKey) + '</b>' +
+      '<button class="link bold" id="' + saveId + '" data-action="' + saveAction + '" disabled>' + t('m.save') + '</button></div>';
+  }
+
+  function openIncome() {
+    modal.innerHTML = '<div class="overlay"><div class="sheet">' + sheetHead('inc.title', 'inc-save', 'save-income') +
+      '<div class="label">' + t('m.amount') + '</div><div class="stack">' +
+      '<input class="field big" id="inc-amount" inputmode="decimal" placeholder="' + t('inc.amountPh') + '">' +
+      '<input class="field" id="inc-note" placeholder="' + t('inc.notePh') + '" maxlength="60">' +
+      '<input class="field" id="inc-date" type="date" value="' + todayISO() + '"></div>' +
+      '<div id="inc-preview"></div></div></div>';
+    updateIncomePreview();
+    setTimeout(() => { const el = document.getElementById('inc-amount'); if (el) el.focus(); }, 50);
+  }
+
+  function updateIncomePreview() {
+    const el = document.getElementById('inc-amount'); if (!el) return;
+    const parts = distribute(parseAmount(el.value) || 0, state.data.envelopes);
+    document.getElementById('inc-save').disabled = !parts.length;
+    document.getElementById('inc-preview').innerHTML = parts.length
+      ? '<div class="label">' + t('inc.split') + '</div><div class="list">' + parts.map(p => {
+          const env = envById(p.envelopeID);
+          return '<div class="item row"><span>' + esc(env.icon) + '</span><span>' + esc(envName(env)) + '</span><span class="spacer"></span><b>' + amd(p.amount) + '</b></div>';
+        }).join('') + '</div>'
+      : (state.data.envelopes.some(e => e.percent > 0) ? '' : '<div class="hint" style="color:var(--orange)">' + t('inc.noPercent') + '</div>');
+  }
+
+  function saveIncome() {
+    const amount = parseAmount(document.getElementById('inc-amount').value);
+    const parts = distribute(amount || 0, state.data.envelopes);
+    if (!parts.length) return;
+    state.data.incomes.push({
+      id: uid(), amount: amount, note: document.getElementById('inc-note').value.trim(),
+      date: document.getElementById('inc-date').value || todayISO(), allocations: parts, createdAt: Date.now()
+    });
+    save(); closeModal(); render();
+  }
+
+  function openExpense() {
+    const envs = state.data.envelopes;
+    if (!envs.length) { confirmDialog(t('exp.noEnvTitle'), t('exp.noEnvMsg'), t('m.ok'), () => {}, true); return; }
+    expenseEnvID = envs[0].id;
+    modal.innerHTML = '<div class="overlay"><div class="sheet">' + sheetHead('exp.title', 'exp-save', 'save-expense') +
+      '<div class="label">' + t('m.amount') + '</div><div class="stack">' +
+      '<input class="field big" id="exp-amount" inputmode="decimal" placeholder="' + t('exp.amountPh') + '">' +
+      '<input class="field" id="exp-note" placeholder="' + t('exp.notePh') + '" maxlength="60">' +
+      '<input class="field" id="exp-date" type="date" value="' + todayISO() + '"></div>' +
+      '<div class="label">' + t('exp.from') + '</div><div class="list" id="exp-envs">' + envs.map(env =>
+        '<button class="pick' + (env.id === expenseEnvID ? ' on' : '') + '" data-action="pick-env" data-id="' + env.id + '">' +
+        '<span>' + esc(env.icon) + '</span><span>' + esc(envName(env)) + '</span><span class="check">✓</span></button>').join('') + '</div>' +
+      '<div id="exp-info"></div></div></div>';
+    updateExpenseInfo();
+    setTimeout(() => { const el = document.getElementById('exp-amount'); if (el) el.focus(); }, 50);
+  }
+
+  function updateExpenseInfo() {
+    const box = document.getElementById('exp-info'); if (!box) return;
+    const env = envById(expenseEnvID);
+    const amount = parseAmount(document.getElementById('exp-amount').value);
+    document.getElementById('exp-save').disabled = !(amount && env);
+    if (!env) { box.innerHTML = ''; return; }
+    const b = balanceOf(env);
+    box.innerHTML = '<div class="list" style="margin-top:16px"><div class="item row"><span>' + t('exp.balance') + '</span><span class="spacer"></span><b>' + amd(b) + '</b></div>' +
+      (amount && amount > b ? '<div class="item small" style="color:var(--orange)">' + t('exp.over') + '</div>' : '') + '</div>';
+  }
+
+  function saveExpense() {
+    const amount = parseAmount(document.getElementById('exp-amount').value);
+    if (!amount || !envById(expenseEnvID)) return;
+    state.data.expenses.push({
+      id: uid(), amount: amount, note: document.getElementById('exp-note').value.trim(),
+      date: document.getElementById('exp-date').value || todayISO(), envelopeID: expenseEnvID, createdAt: Date.now()
+    });
+    save(); closeModal(); render();
+  }
+
+  function deleteEnvelopes(ids) {
+    const d = state.data;
+    d.envelopes = d.envelopes.filter(e => !ids.has(e.id));
+    d.expenses = d.expenses.filter(x => !ids.has(x.envelopeID));
+    d.incomes.forEach(i => { i.allocations = i.allocations.filter(a => !ids.has(a.envelopeID)); });
+    d.incomes = d.incomes.filter(i => i.allocations.length > 0);
+    save();
+  }
+
+  // ---------- Իրադարձություններ ----------
+  document.addEventListener('click', e => {
+    if (e.target.classList && e.target.classList.contains('overlay')) { closeModal(); return; }
+
+    // Բաժանորդագրության «ուղարկել» կոճակը (իրական հղում է)
+    const send = e.target.closest('#sub-send');
+    if (send) {
+      const input = document.getElementById('sub-email');
+      const email = input ? input.value.trim() : '';
+      state.flash = {};
+      if (!isEmail(email)) { e.preventDefault(); state.flash.sub = 'profile.badEmail'; render(); restoreEmail(email); return; }
+      const url = subscribeURL(email);
+      if (!url) { e.preventDefault(); state.flash.sub = 'profile.subOff'; render(); restoreEmail(email); return; }
+      // Հղումը բացվում է նոր ներդիրում և ուղարկում է հասցեն Google Form-ին
+      state.data.profile.subscribedEmail = email; save();
+      setTimeout(render, 0);
+      return;
+    }
+
+    const el = e.target.closest('[data-action]'); if (!el || el.disabled) return;
+    const id = el.dataset.id;
+    switch (el.dataset.action) {
+      case 'tab': state.tab = id; state.selecting = false; state.selected.clear(); state.flash = {}; render(); try { window.scrollTo(0, 0); } catch (err) {} break;
+      case 'lang': setLang(id); break;
+      case 'auth-mode': state.authMode = id; state.authError = ''; render(); break;
+      case 'open-income': openIncome(); break;
+      case 'open-expense': openExpense(); break;
+      case 'close-modal': closeModal(); break;
+      case 'confirm-ok': { const fn = onConfirm; closeModal(); if (fn) fn(); break; }
+      case 'save-income': saveIncome(); break;
+      case 'save-expense': saveExpense(); break;
+      case 'pick-env':
+        expenseEnvID = id;
+        document.querySelectorAll('#exp-envs .pick').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+        updateExpenseInfo(); break;
+      case 'del-income':
+        confirmDialog(t('c.delIncTitle'), t('c.delIncMsg'), t('m.delete'), () => {
+          state.data.incomes = state.data.incomes.filter(i => i.id !== id); save(); render();
+        }); break;
+      case 'del-expense':
+        confirmDialog(t('c.delExpTitle'), t('c.delExpMsg'), t('m.delete'), () => {
+          state.data.expenses = state.data.expenses.filter(x => x.id !== id); save(); render();
+        }); break;
+      case 'env-minus': { const env = envById(id); if (env) { env.percent = Math.max(0, env.percent - 5); save(); render(); } break; }
+      case 'env-plus': { const env = envById(id); const rem = remaining(); if (env && rem > 0) { env.percent += Math.min(5, rem); save(); render(); } break; }
+      case 'env-add': {
+        const icons = ['📁','✈️','🎁','🚗','💊','📚','👕','☕️'];
+        const n = state.data.envelopes.length;
+        state.data.envelopes.push({ id: uid(), key: 'new', name: '', percent: 0, icon: icons[n % icons.length], color: COLOR_KEYS[n % COLOR_KEYS.length] });
+        save(); render(); break;
+      }
+      case 'env-select-start': state.selecting = true; state.selected.clear(); render(); break;
+      case 'env-select-cancel': state.selecting = false; state.selected.clear(); render(); break;
+      case 'env-toggle': if (state.selected.has(id)) state.selected.delete(id); else state.selected.add(id); render(); break;
+      case 'env-delete-selected':
+        confirmDialog(t('c.delEnvTitle', { n: state.selected.size }), t('c.delEnvMsg'), t('m.delete'), () => {
+          deleteEnvelopes(new Set(state.selected)); state.selecting = false; state.selected.clear(); render();
+        }); break;
+      case 'open-settings': openSettings(); break;
+      case 'save-name': {
+        const input = document.getElementById('display-name');
+        state.data.profile.displayName = input ? input.value.trim().slice(0, 40) : '';
+        save(); state.sflash = { sec: 'name', ok: true, key: 'profile.saved' }; refresh(); break;
+      }
+      case 'avatar-remove': state.data.profile.avatar = ''; save(); state.sflash = {}; refresh(); break;
+      case 'save-username': {
+        const input = document.getElementById('new-username');
+        const value = input ? input.value : '';
+        try { changeUsername(value); state.sflash = { sec: 'username', ok: true, key: 'set.usernameSaved' }; refresh(); }
+        catch (err) {
+          state.sflash = { sec: 'username', key: err.message }; refresh();
+          const again = document.getElementById('new-username'); if (again && !again.disabled) again.value = value;
+        }
+        break;
+      }
+      case 'save-password': {
+        const v = i => { const el = document.getElementById(i); return el ? el.value : ''; };
+        changePassword(v('cur-pass'), v('new-pass'), v('new-pass2'))
+          .then(() => { state.sflash = { sec: 'password', ok: true, key: 'set.passSaved' }; refresh(); })
+          .catch(err => { state.sflash = { sec: 'password', key: err.message }; refresh(); });
+        break;
+      }
+      case 'logout': confirmDialog(t('c.logoutTitle'), t('c.logoutMsg'), t('c.logoutOk'), logout); break;
+    }
+  });
+
+  function restoreEmail(email) {
+    const input = document.getElementById('sub-email');
+    if (input) { input.value = email; updateSubscribeLink(); }
+  }
+
+  document.addEventListener('input', e => {
+    const tg = e.target;
+    if (tg.id === 'inc-amount') updateIncomePreview();
+    else if (tg.id === 'exp-amount') updateExpenseInfo();
+    else if (tg.id === 'sub-email') updateSubscribeLink();
+    else if (tg.dataset && tg.dataset.envName) {
+      const env = envById(tg.dataset.envName);
+      if (env) { env.name = tg.value.trim() || t('env.unnamed'); save(); }
+    }
+  });
+
+  document.addEventListener('change', e => {
+    if (e.target.id === 'avatar-input' && e.target.files && e.target.files[0]) loadAvatar(e.target.files[0]);
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.innerHTML) closeModal();
+    if (e.key === 'Enter' && e.target.id === 'display-name') { e.preventDefault(); const b = document.querySelector('[data-action="save-name"]'); if (b) b.click(); }
+  });
+
+  document.addEventListener('submit', async e => {
+    if (e.target.id !== 'auth-form') return;
+    e.preventDefault();
+    const f = e.target;
+    const val = n => { const el = f.querySelector('[name="' + n + '"]'); return el ? el.value : ''; };
+    const u = val('username'), p = val('password');
+    try {
+      if (state.authMode === 'login') await login(u, p);
+      else await register(u, p, val('confirm'));
+      state.authError = '';
+    } catch (err) {
+      state.authError = I18N.hy[err.message] ? err.message : 'err.wrong';
+      render();
+      const nf = document.getElementById('auth-form');
+      if (nf) nf.querySelector('[name="username"]').value = u;
+    }
+  });
+
+  // ---------- Սկիզբ ----------
+  const session = S.get('bb_session');
+  if (session && loadUsers().some(u => u.username === session)) {
+    state.user = session; state.data = loadData(session);
+  }
+  render();
+})();
+</script>
+</body>
+</html>
