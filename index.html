@@ -154,6 +154,23 @@
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty div { font-size: 44px; margin-bottom: 10px; }
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  /* PIN էկրան */
+  .pin-screen { max-width: 380px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px); text-align: center; }
+  .pin-screen h2 { margin: 14px 0 4px; font-size: 22px; }
+  .pin-dots { display: flex; gap: 16px; margin: 26px 0 10px; }
+  .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent); transition: background .1s; }
+  .pin-dot.on { background: var(--accent); }
+  .pin-msg { min-height: 20px; font-size: 14px; color: var(--red); }
+  .pin-pad { display: grid; grid-template-columns: repeat(3, 74px); gap: 14px 24px; margin-top: 18px; }
+  .pin-key { width: 74px; height: 74px; border-radius: 50%; border: 0; background: var(--card); font-size: 28px; font-weight: 500; display: grid; place-items: center; }
+  .pin-key:active { background: var(--soft); }
+  .pin-key.ghost { background: transparent; }
+  .pin-key svg { width: 30px; height: 30px; }
+  .pin-links { margin-top: 22px; display: flex; gap: 24px; justify-content: center; }
+  .shake { animation: shake .35s; }
+  @keyframes shake { 0%,100% { transform: none } 20% { transform: translateX(-10px) } 40% { transform: translateX(10px) } 60% { transform: translateX(-6px) } 80% { transform: translateX(6px) } }
+  .big-emoji { font-size: 56px; }
   @keyframes up { from { transform: translateY(40px); opacity: .6 } to { transform: none; opacity: 1 } }
   @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
   @keyframes pop { from { transform: scale(.95); opacity: 0 } to { transform: none; opacity: 1 } }
@@ -239,7 +256,22 @@
       'set.usernameSame': 'Սա արդեն քո մուտքանունն է։', 'set.usernameSaved': 'Մուտքանունը փոխված է ✓',
       'set.password': 'Գաղտնաբառ', 'set.curPass': 'Ընթացիկ գաղտնաբառ', 'set.newPass': 'Նոր գաղտնաբառ',
       'set.newPass2': 'Կրկնիր նոր գաղտնաբառը', 'set.passSave': 'Փոխել գաղտնաբառը', 'set.passSaved': 'Գաղտնաբառը փոխված է ✓',
-      'err.curPass': 'Ընթացիկ գաղտնաբառը սխալ է։', 'err.samePass': 'Նոր գաղտնաբառը պետք է տարբերվի ընթացիկից։'
+      'err.curPass': 'Ընթացիկ գաղտնաբառը սխալ է։', 'err.samePass': 'Նոր գաղտնաբառը պետք է տարբերվի ընթացիկից։',
+      'pin.createTitle': 'Ստեղծիր PIN կոդ', 'pin.createSub': '5 թվանշան՝ հավելվածն արագ և ապահով բացելու համար',
+      'pin.repeatTitle': 'Կրկնիր PIN կոդը', 'pin.repeatSub': 'Մուտքագրիր նույն 5 թվանշանը',
+      'pin.mismatch': 'PIN-երը չեն համընկնում։ Փորձիր նորից։', 'pin.skip': 'Հետո', 'pin.cancel': 'Չեղարկել',
+      'pin.enterTitle': 'Մուտքագրիր PIN կոդը', 'pin.wrong': 'Սխալ PIN։ Մնաց {n} փորձ։', 'pin.forgot': 'Մոռացե՞լ ես PIN-ը',
+      'err.pinLocked': 'Չափազանց շատ սխալ փորձեր։ Մուտք գործիր գաղտնաբառով։',
+      'pin.forgotMsg': 'Մուտք գործիր գաղտնաբառով, հետո կարգավորումներում սահմանիր նոր PIN։',
+      'bio.offerTitle': 'Միացնե՞լ Face ID / Touch ID', 'bio.offerSub': 'Հավելվածը կբացես առանց PIN մուտքագրելու։ PIN-ը կմնա որպես պահուստային տարբերակ։',
+      'bio.enable': 'Միացնել', 'bio.unlock': 'Face ID / Touch ID', 'bio.failed': 'Face ID / Touch ID-ն չհաջողվեց։ Մուտքագրիր PIN-ը։',
+      'bio.unavailable': 'Այս բրաուզերում կամ դիտման ռեժիմում Face ID / Touch ID հասանելի չէ։ PIN-ը շարունակում է աշխատել։',
+      'bio.enabled': 'Face ID / Touch ID-ն միացված է ✓', 'bio.disabled': 'Face ID / Touch ID-ն անջատված է',
+      'set.security': 'Անվտանգություն', 'set.pinOn': 'PIN կոդը միացված է', 'set.pinOff': 'PIN կոդը սահմանված չէ',
+      'set.pinSet': 'Սահմանել PIN', 'set.pinChange': 'Փոխել PIN-ը', 'set.pinRemove': 'Հեռացնել PIN-ը', 'set.pinSaved': 'PIN կոդը պահպանված է ✓',
+      'set.pinRemoved': 'PIN կոդը հեռացված է', 'set.bioOn': 'Միացնել Face ID / Touch ID', 'set.bioOff': 'Անջատել Face ID / Touch ID',
+      'set.bioNeedPin': 'Face ID / Touch ID-ն աշխատում է PIN կոդի հետ միասին. նախ սահմանիր PIN։',
+      'c.pinRemoveTitle': 'Հեռացնե՞լ PIN-ը', 'c.pinRemoveMsg': 'Հավելվածը կբացվի առանց PIN-ի, իսկ Face ID / Touch ID-ն կանջատվի։', 'c.remove': 'Հեռացնել'
     },
     ru: {
       'app.name': 'Мой бюджет', 'app.tagline': 'Управляйте доходами и расходами',
@@ -296,7 +328,22 @@
       'set.usernameSame': 'Это уже ваш логин.', 'set.usernameSaved': 'Логин изменён ✓',
       'set.password': 'Пароль', 'set.curPass': 'Текущий пароль', 'set.newPass': 'Новый пароль',
       'set.newPass2': 'Повторите новый пароль', 'set.passSave': 'Сменить пароль', 'set.passSaved': 'Пароль изменён ✓',
-      'err.curPass': 'Текущий пароль неверный.', 'err.samePass': 'Новый пароль должен отличаться от текущего.'
+      'err.curPass': 'Текущий пароль неверный.', 'err.samePass': 'Новый пароль должен отличаться от текущего.',
+      'pin.createTitle': 'Создайте PIN-код', 'pin.createSub': '5 цифр для быстрого и безопасного входа',
+      'pin.repeatTitle': 'Повторите PIN-код', 'pin.repeatSub': 'Введите те же 5 цифр',
+      'pin.mismatch': 'PIN-коды не совпадают. Попробуйте снова.', 'pin.skip': 'Позже', 'pin.cancel': 'Отмена',
+      'pin.enterTitle': 'Введите PIN-код', 'pin.wrong': 'Неверный PIN. Осталось попыток: {n}.', 'pin.forgot': 'Забыли PIN?',
+      'err.pinLocked': 'Слишком много неверных попыток. Войдите с паролем.',
+      'pin.forgotMsg': 'Войдите с паролем, затем задайте новый PIN в настройках.',
+      'bio.offerTitle': 'Включить Face ID / Touch ID?', 'bio.offerSub': 'Приложение будет открываться без ввода PIN. PIN останется запасным вариантом.',
+      'bio.enable': 'Включить', 'bio.unlock': 'Face ID / Touch ID', 'bio.failed': 'Face ID / Touch ID не сработал. Введите PIN.',
+      'bio.unavailable': 'Face ID / Touch ID недоступен в этом браузере или режиме просмотра. PIN продолжает работать.',
+      'bio.enabled': 'Face ID / Touch ID включён ✓', 'bio.disabled': 'Face ID / Touch ID выключен',
+      'set.security': 'Безопасность', 'set.pinOn': 'PIN-код включён', 'set.pinOff': 'PIN-код не задан',
+      'set.pinSet': 'Задать PIN', 'set.pinChange': 'Изменить PIN', 'set.pinRemove': 'Удалить PIN', 'set.pinSaved': 'PIN-код сохранён ✓',
+      'set.pinRemoved': 'PIN-код удалён', 'set.bioOn': 'Включить Face ID / Touch ID', 'set.bioOff': 'Выключить Face ID / Touch ID',
+      'set.bioNeedPin': 'Face ID / Touch ID работает вместе с PIN — сначала задайте PIN.',
+      'c.pinRemoveTitle': 'Удалить PIN?', 'c.pinRemoveMsg': 'Приложение будет открываться без PIN, а Face ID / Touch ID отключится.', 'c.remove': 'Удалить'
     },
     en: {
       'app.name': 'My Budget', 'app.tagline': 'Manage your income and expenses',
@@ -353,7 +400,22 @@
       'set.usernameSame': 'This is already your username.', 'set.usernameSaved': 'Username changed ✓',
       'set.password': 'Password', 'set.curPass': 'Current password', 'set.newPass': 'New password',
       'set.newPass2': 'Repeat new password', 'set.passSave': 'Change password', 'set.passSaved': 'Password changed ✓',
-      'err.curPass': 'Current password is incorrect.', 'err.samePass': 'New password must differ from the current one.'
+      'err.curPass': 'Current password is incorrect.', 'err.samePass': 'New password must differ from the current one.',
+      'pin.createTitle': 'Create a PIN', 'pin.createSub': '5 digits to open the app quickly and safely',
+      'pin.repeatTitle': 'Repeat your PIN', 'pin.repeatSub': 'Enter the same 5 digits',
+      'pin.mismatch': "PINs don't match. Try again.", 'pin.skip': 'Later', 'pin.cancel': 'Cancel',
+      'pin.enterTitle': 'Enter your PIN', 'pin.wrong': 'Wrong PIN. {n} attempts left.', 'pin.forgot': 'Forgot PIN?',
+      'err.pinLocked': 'Too many wrong attempts. Log in with your password.',
+      'pin.forgotMsg': 'Log in with your password, then set a new PIN in Settings.',
+      'bio.offerTitle': 'Turn on Face ID / Touch ID?', 'bio.offerSub': 'Open the app without typing your PIN. Your PIN stays as a backup.',
+      'bio.enable': 'Turn on', 'bio.unlock': 'Face ID / Touch ID', 'bio.failed': "Face ID / Touch ID didn't work. Enter your PIN.",
+      'bio.unavailable': "Face ID / Touch ID isn't available in this browser or view. Your PIN still works.",
+      'bio.enabled': 'Face ID / Touch ID is on ✓', 'bio.disabled': 'Face ID / Touch ID is off',
+      'set.security': 'Security', 'set.pinOn': 'PIN is on', 'set.pinOff': 'No PIN set',
+      'set.pinSet': 'Set PIN', 'set.pinChange': 'Change PIN', 'set.pinRemove': 'Remove PIN', 'set.pinSaved': 'PIN saved ✓',
+      'set.pinRemoved': 'PIN removed', 'set.bioOn': 'Turn on Face ID / Touch ID', 'set.bioOff': 'Turn off Face ID / Touch ID',
+      'set.bioNeedPin': 'Face ID / Touch ID works together with a PIN — set a PIN first.',
+      'c.pinRemoveTitle': 'Remove PIN?', 'c.pinRemoveMsg': 'The app will open without a PIN and Face ID / Touch ID will turn off.', 'c.remove': 'Remove'
     }
   };
   const MONTHS = {
@@ -467,7 +529,8 @@
     });
   }
 
-  const state = { user: null, data: null, tab: 'home', authMode: 'login', authError: '', selecting: false, selected: new Set(), flash: {}, settingsOpen: false, sflash: {} };
+  const state = { user: null, data: null, tab: 'home', authMode: 'login', authError: '', selecting: false, selected: new Set(), flash: {}, settingsOpen: false, sflash: {},
+    screen: 'app', pin: { mode: 'setup', input: '', first: '', error: null, fromSettings: false, shake: false }, bioAvailable: false, bioError: '' };
 
   const dataKey = u => 'bb_data_' + u.toLowerCase();
   function loadData(user) {
@@ -506,14 +569,14 @@
     const salt = uid();
     users.push({ username: name, salt: salt, hash: await sha256(salt + password), createdAt: Date.now() });
     saveUsers(users);
-    startSession(name);
+    startSession(name, true);
   }
 
   async function login(username, password) {
     const name = username.trim();
     const user = loadUsers().find(u => u.username.toLowerCase() === name.toLowerCase());
     if (!user || user.hash !== await sha256(user.salt + password)) throw new Error('err.wrong');
-    startSession(user.username);
+    startSession(user.username, false);
   }
 
   function validateUsername(name) {
@@ -560,15 +623,139 @@
     saveUsers(users);
   }
 
-  function startSession(name) {
+  function updateAccount(fn) {
+    const users = loadUsers();
+    const me = users.find(u => u.username === state.user);
+    if (me) { fn(me); saveUsers(users); }
+    return me;
+  }
+
+  function startSession(name, isNew) {
     state.user = name; state.data = loadData(name); state.tab = 'home'; state.flash = {};
     S.set('bb_session', name);
+    const acc = currentAccount() || {};
+    // Գրանցումից հետո կամ եթե PIN դեռ չկա (և «Հետո» չի սեղմվել)՝ տանում ենք PIN ստեղծելու էջ
+    if (!acc.pin && (isNew || !acc.pinSkipped)) { startPinSetup(false); return; }
+    state.screen = 'app';
     render();
+  }
+
+  // ---------- PIN կոդ ----------
+  const PIN_LENGTH = 5, PIN_MAX_ATTEMPTS = 5;
+
+  function startPinSetup(fromSettings) {
+    if (fromSettings) closeModal();
+    state.screen = 'pin-setup';
+    state.pin = { mode: 'setup', input: '', first: '', error: null, fromSettings: !!fromSettings, shake: false };
+    render();
+  }
+
+  function lockApp() {
+    state.screen = 'locked';
+    state.pin = { mode: 'unlock', input: '', first: '', error: null, fromSettings: false, shake: false };
+    render();
+  }
+
+  function pinError(key, vars) {
+    state.pin.error = { key: key, vars: vars };
+    state.pin.input = '';
+    state.pin.shake = true;
+    render();
+    state.pin.shake = false;
+  }
+
+  function pinDigit(d) {
+    if (state.pin.input.length >= PIN_LENGTH) return;
+    state.pin.input += d;
+    if (state.pin.input.length === 1) state.pin.error = null;
+    render();
+    if (state.pin.input.length === PIN_LENGTH) setTimeout(pinComplete, 120);
+  }
+
+  function pinBack() { state.pin.input = state.pin.input.slice(0, -1); render(); }
+
+  async function pinComplete() {
+    const pin = state.pin, code = pin.input;
+    if (code.length !== PIN_LENGTH) return;
+
+    if (pin.mode === 'setup') {
+      pin.first = code; pin.input = ''; pin.mode = 'confirm'; render(); return;
+    }
+
+    if (pin.mode === 'confirm') {
+      if (code !== pin.first) { pin.mode = 'setup'; pin.first = ''; pinError('pin.mismatch'); return; }
+      const salt = uid(), hash = await sha256(salt + code);
+      const acc = updateAccount(me => { me.pin = { salt: salt, hash: hash }; me.pinAttempts = 0; me.pinSkipped = false; });
+      if (pin.fromSettings) { finishToSettings('set.pinSaved', true); return; }
+      if (state.bioAvailable && acc && !acc.bio) { state.bioError = ''; state.screen = 'bio-offer'; render(); return; }
+      state.screen = 'app'; render(); return;
+    }
+
+    if (pin.mode === 'unlock') {
+      const acc = currentAccount();
+      if (!acc || !acc.pin) { state.screen = 'app'; render(); return; }
+      if (await sha256(acc.pin.salt + code) === acc.pin.hash) {
+        updateAccount(me => { me.pinAttempts = 0; });
+        state.screen = 'app'; render(); return;
+      }
+      const me = updateAccount(m => { m.pinAttempts = (m.pinAttempts || 0) + 1; });
+      const left = PIN_MAX_ATTEMPTS - (me ? me.pinAttempts : PIN_MAX_ATTEMPTS);
+      if (left <= 0) {
+        updateAccount(m => { m.pinAttempts = 0; });
+        logout(); state.authError = 'err.pinLocked'; render(); return;
+      }
+      pinError('pin.wrong', { n: left });
+    }
+  }
+
+  function finishToSettings(key, ok) {
+    state.screen = 'app'; state.tab = 'profile'; render();
+    openSettings(); state.sflash = { sec: 'security', ok: ok, key: key }; renderSettings();
+  }
+
+  // ---------- Face ID / Touch ID (WebAuthn) ----------
+  const toB64 = buf => btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+  const fromB64 = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+
+  async function bioRegister() {
+    if (!window.PublicKeyCredential || !navigator.credentials) throw new Error('bio.unavailable');
+    const cred = await navigator.credentials.create({ publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      rp: { name: t('app.name') },
+      user: { id: crypto.getRandomValues(new Uint8Array(16)), name: state.user, displayName: shownName() },
+      pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+      authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'discouraged' },
+      attestation: 'none', timeout: 60000
+    } });
+    if (!cred) throw new Error('bio.unavailable');
+    updateAccount(me => { me.bio = { id: toB64(cred.rawId) }; });
+  }
+
+  async function bioVerify() {
+    const acc = currentAccount();
+    if (!acc || !acc.bio) throw new Error('bio.failed');
+    const res = await navigator.credentials.get({ publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      allowCredentials: [{ type: 'public-key', id: fromB64(acc.bio.id) }],
+      userVerification: 'required', timeout: 60000
+    } });
+    if (!res) throw new Error('bio.failed');
+  }
+
+  function checkBioAvailable() {
+    try {
+      if (window.PublicKeyCredential && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
+        PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+          .then(v => { state.bioAvailable = !!v; if (state.user && state.screen !== 'app') render(); })
+          .catch(() => {});
+      }
+    } catch (e) {}
   }
 
   function logout() {
     state.user = null; state.data = null; state.selecting = false; state.selected.clear();
-    state.authMode = 'login'; state.authError = ''; state.flash = {};
+    state.authMode = 'login'; state.authError = ''; state.flash = {}; state.screen = 'app';
+    closeModal();
     S.del('bb_session');
     render();
   }
@@ -599,11 +786,49 @@
     document.documentElement.lang = lang;
     document.title = t('app.name');
     if (!state.user) { root.innerHTML = authView(); return; }
+    if (state.screen === 'pin-setup' || state.screen === 'locked') { root.innerHTML = pinView(); return; }
+    if (state.screen === 'bio-offer') { root.innerHTML = bioOfferView(); return; }
     const views = { home: homeView, tx: txView, summary: summaryView, env: envView, profile: profileView };
     root.innerHTML = '<div class="shell">' + views[state.tab]() + '</div>' +
       '<nav class="tabbar">' + TABS.map(k =>
         '<button class="tab' + (state.tab === k ? ' active' : '') + '" data-action="tab" data-id="' + k + '">' + ICONS[k] + '<span>' + t('tab.' + k) + '</span></button>'
       ).join('') + '</nav>';
+  }
+
+  const FACE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 9.5v1M15 9.5v1M12 9.5V13h-1M9.5 15.5a3.5 3.5 0 0 0 5 0"/></svg>';
+  const BACK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M17 9l-5 6M12 9l5 6"/></svg>';
+
+  function pinView() {
+    const pin = state.pin, unlock = pin.mode === 'unlock';
+    const acc = currentAccount() || {};
+    const title = unlock ? t('pin.enterTitle') : (pin.mode === 'confirm' ? t('pin.repeatTitle') : t('pin.createTitle'));
+    const sub = unlock ? esc(shownName()) : (pin.mode === 'confirm' ? t('pin.repeatSub') : t('pin.createSub'));
+    const dots = Array.from({ length: PIN_LENGTH }, (_, i) => '<span class="pin-dot' + (i < pin.input.length ? ' on' : '') + '"></span>').join('');
+    const showBio = unlock && acc.bio;
+    const keys = ['1','2','3','4','5','6','7','8','9'].map(k => '<button class="pin-key" data-action="pin-digit" data-id="' + k + '">' + k + '</button>').join('') +
+      (showBio ? '<button class="pin-key ghost accent" data-action="bio-unlock" aria-label="' + t('bio.unlock') + '">' + FACE_ICON + '</button>' : '<span></span>') +
+      '<button class="pin-key" data-action="pin-digit" data-id="0">0</button>' +
+      '<button class="pin-key ghost" data-action="pin-back" aria-label="⌫">' + BACK_ICON + '</button>';
+    let links = '';
+    if (unlock) links = '<button class="link" data-action="pin-forgot">' + t('pin.forgot') + '</button>';
+    else if (pin.fromSettings) links = '<button class="link" data-action="pin-cancel">' + t('pin.cancel') + '</button>';
+    else links = '<button class="link" data-action="pin-skip">' + t('pin.skip') + '</button>';
+    return '<div class="pin-screen">' +
+      (unlock ? avatarHTML(72) : '<div class="logo" style="margin:0">🔒</div>') +
+      '<h2>' + title + '</h2><div class="muted">' + sub + '</div>' +
+      '<div class="pin-dots' + (pin.shake ? ' shake' : '') + '">' + dots + '</div>' +
+      '<div class="pin-msg">' + (pin.error ? esc(t(pin.error.key, pin.error.vars)) : '') + '</div>' +
+      '<div class="pin-pad">' + keys + '</div>' +
+      '<div class="pin-links">' + links + '</div></div>';
+  }
+
+  function bioOfferView() {
+    return '<div class="pin-screen"><div class="logo" style="margin:0;color:#fff">' + FACE_ICON.replace('<svg ', '<svg style="width:40px;height:40px" ') + '</div>' +
+      '<h2>' + t('bio.offerTitle') + '</h2><div class="muted" style="max-width:300px">' + t('bio.offerSub') + '</div>' +
+      (state.bioError ? '<div class="error" style="max-width:300px">' + esc(t(state.bioError)) + '</div>' : '') +
+      '<div style="width:100%;max-width:300px;margin-top:28px" class="stack">' +
+      (state.bioError ? '' : '<button class="btn btn-primary" data-action="bio-enable-offer">' + t('bio.enable') + '</button>') +
+      '<button class="btn btn-soft" data-action="bio-later">' + (state.bioError ? 'OK' : t('pin.skip')) + '</button></div></div>';
   }
 
   function authView() {
@@ -840,7 +1065,26 @@
       '<input class="field" id="new-pass" type="password" placeholder="' + t('set.newPass') + '">' +
       '<input class="field" id="new-pass2" type="password" placeholder="' + t('set.newPass2') + '">' +
       '<button class="btn btn-primary" data-action="save-password">' + t('set.passSave') + '</button></div>' + msg('password') +
+      securityHTML(msg) +
       '</div></div>';
+  }
+
+  function securityHTML(msg) {
+    const acc = currentAccount() || {};
+    let rows = '<div class="item row"><span>🔢</span><span>' + (acc.pin ? t('set.pinOn') : t('set.pinOff')) + '</span>' +
+      (acc.bio ? '<span class="spacer"></span><span class="small" style="color:var(--green)">Face ID / Touch ID ✓</span>' : '') + '</div>' +
+      '<button class="list-btn accent" data-action="pin-setup-settings">' + (acc.pin ? t('set.pinChange') : t('set.pinSet')) + '</button>';
+    if (acc.pin) {
+      rows += acc.bio
+        ? '<button class="list-btn danger" data-action="bio-off">' + t('set.bioOff') + '</button>'
+        : '<button class="list-btn accent" data-action="bio-on">' + t('set.bioOn') + '</button>';
+      rows += '<button class="list-btn danger" data-action="pin-remove">' + t('set.pinRemove') + '</button>';
+    }
+    let hint = '';
+    if (!acc.pin) hint = t('set.bioNeedPin');
+    else if (!acc.bio && !state.bioAvailable) hint = t('bio.unavailable');
+    return '<div class="label">' + t('set.security') + '</div><div class="list">' + rows + '</div>' + msg('security') +
+      (hint ? '<div class="hint">' + hint + '</div>' : '');
   }
 
   function renderSettings() {
@@ -1047,6 +1291,31 @@
           deleteEnvelopes(new Set(state.selected)); state.selecting = false; state.selected.clear(); render();
         }); break;
       case 'open-settings': openSettings(); break;
+      case 'pin-digit': pinDigit(id); break;
+      case 'pin-back': pinBack(); break;
+      case 'pin-skip': updateAccount(me => { me.pinSkipped = true; }); state.screen = 'app'; render(); break;
+      case 'pin-cancel': finishToSettings('', true); state.sflash = {}; renderSettings(); break;
+      case 'pin-forgot': logout(); state.authError = 'pin.forgotMsg'; render(); break;
+      case 'pin-setup-settings': startPinSetup(true); break;
+      case 'pin-remove':
+        confirmDialog(t('c.pinRemoveTitle'), t('c.pinRemoveMsg'), t('c.remove'), () => {
+          updateAccount(me => { delete me.pin; delete me.bio; me.pinAttempts = 0; me.pinSkipped = true; });
+          finishToSettings('set.pinRemoved', true);
+        }); break;
+      case 'bio-unlock':
+        bioVerify().then(() => { updateAccount(me => { me.pinAttempts = 0; }); state.screen = 'app'; render(); })
+          .catch(() => { state.pin.error = { key: 'bio.failed' }; render(); });
+        break;
+      case 'bio-enable-offer':
+        bioRegister().then(() => { state.screen = 'app'; render(); })
+          .catch(() => { state.bioError = 'bio.unavailable'; render(); });
+        break;
+      case 'bio-later': state.bioError = ''; state.screen = 'app'; render(); break;
+      case 'bio-on':
+        bioRegister().then(() => { state.sflash = { sec: 'security', ok: true, key: 'bio.enabled' }; refresh(); })
+          .catch(() => { state.sflash = { sec: 'security', key: 'bio.unavailable' }; refresh(); });
+        break;
+      case 'bio-off': updateAccount(me => { delete me.bio; }); state.sflash = { sec: 'security', ok: true, key: 'bio.disabled' }; refresh(); break;
       case 'save-name': {
         const input = document.getElementById('display-name');
         state.data.profile.displayName = input ? input.value.trim().slice(0, 40) : '';
@@ -1095,6 +1364,10 @@
   });
 
   document.addEventListener('keydown', e => {
+    if (state.user && (state.screen === 'pin-setup' || state.screen === 'locked') && !modal.innerHTML) {
+      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); pinDigit(e.key); return; }
+      if (e.key === 'Backspace') { e.preventDefault(); pinBack(); return; }
+    }
     if (e.key === 'Escape' && modal.innerHTML) closeModal();
     if (e.key === 'Enter' && e.target.id === 'display-name') { e.preventDefault(); const b = document.querySelector('[data-action="save-name"]'); if (b) b.click(); }
   });
@@ -1119,10 +1392,14 @@
 
   // ---------- Սկիզբ ----------
   const session = S.get('bb_session');
+  checkBioAvailable();
   if (session && loadUsers().some(u => u.username === session)) {
     state.user = session; state.data = loadData(session);
+    const acc = currentAccount();
+    if (acc && acc.pin) { lockApp(); } else { render(); }
+  } else {
+    render();
   }
-  render();
 })();
 </script>
 </body>
