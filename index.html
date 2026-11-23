@@ -171,6 +171,13 @@
   .shake { animation: shake .35s; }
   @keyframes shake { 0%,100% { transform: none } 20% { transform: translateX(-10px) } 40% { transform: translateX(10px) } 60% { transform: translateX(-6px) } 80% { transform: translateX(6px) } }
   .big-emoji { font-size: 56px; }
+  .toast { position: fixed; left: 50%; bottom: calc(90px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #111827; color: #fff;
+    padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 50; opacity: 0; pointer-events: none; transition: opacity .2s; max-width: 90%; text-align: center; }
+  .toast.show { opacity: .95; }
+  .info { color: var(--green); font-size: 14px; margin: 10px 2px 0; }
+  .text-link { border: 0; background: none; color: var(--accent); font-size: 14px; padding: 4px 0; margin-top: 12px; }
+  .spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--soft); border-top-color: var(--accent); animation: spin .8s linear infinite; margin: 20px auto; }
+  @keyframes spin { to { transform: rotate(360deg) } }
   @keyframes up { from { transform: translateY(40px); opacity: .6 } to { transform: none; opacity: 1 } }
   @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
   @keyframes pop { from { transform: scale(.95); opacity: 0 } to { transform: none; opacity: 1 } }
@@ -179,16 +186,21 @@
 <body>
 <div id="root"></div>
 <div id="modal"></div>
+<div id="toast" class="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (function () {
   'use strict';
 
   // =====================================================================
-  // ԿԱՐԳԱՎՈՐՈՒՄ. բաժանորդագրության Google Form-ի նախալրացված հղումը։
-  // Google Forms → ⋮ → «Get pre-filled link», Email դաշտում գրիր EMAIL,
-  // սեղմիր «Get link» և հղումը տեղադրիր այստեղ։ Դատարկ է՝ ուղարկումն անջատված է։
-  const SUBSCRIBE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdtXFgKSNQmHJMG6Jit0XcRxgOEc0EnDPMNYXr7UYuFSHLmFA/viewform?usp=pp_url&entry.1077623573=EMAIL';
+  // ՍԵՐՎԵՐ (Supabase). publishable key-ը նախատեսված է բրաուզերի համար,
+  // տվյալները պաշտպանված են Row Level Security կանոններով։
+  // ԵՐԲԵՔ այստեղ մի տեղադրիր sb_secret_... key-ը։
+  const SUPABASE_URL = 'https://olwwtfveamhayurofwhy.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_pCsMu1Tl0MhMIsOf8fqtig_k9TDJVfj';
+  let sb = null;
+  try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) { sb = null; }
   // =====================================================================
 
   // ---------- Պահպանում (բրաուզերում) ----------
@@ -430,6 +442,49 @@
   };
   const LANGS = [['hy', 'Հայերեն'], ['ru', 'Русский'], ['en', 'English']];
 
+  Object.assign(I18N.hy, {
+    'err.wrong': 'Սխալ էլ. հասցե կամ գաղտնաբառ։',
+    'auth.email': 'Էլ. հասցե', 'auth.forgot': 'Մոռացե՞լ ես գաղտնաբառը',
+    'auth.resetTitle': 'Գաղտնաբառի վերականգնում', 'auth.resetSub': 'Մուտքագրիր էլ. հասցեդ, և կուղարկենք վերականգնման հղում։',
+    'auth.sendLink': 'Ուղարկել հղումը', 'auth.linkSent': 'Հղումն ուղարկված է։ Ստուգիր էլ. փոստդ (նաև Spam-ը)։', 'auth.back': '← Վերադառնալ',
+    'auth.newPassTitle': 'Սահմանիր նոր գաղտնաբառ', 'auth.newPassSave': 'Պահպանել գաղտնաբառը', 'auth.passUpdated': 'Գաղտնաբառը փոխված է ✓',
+    'auth.checkEmail': 'Գրանցումը հաջողվեց։ Հաստատիր էլ. հասցեդ նամակում ստացված հղումով, հետո մուտք գործիր։',
+    'auth.loading': 'Բեռնվում է...', 'auth.demo': 'Քո տվյալները պահվում են ապահով սերվերում և հասանելի են ցանկացած սարքից։',
+    'err.notConfirmed': 'Էլ. հասցեն դեռ հաստատված չէ։ Ստուգիր փոստդ։', 'err.emailTaken': 'Այս էլ. հասցեով հաշիվ արդեն կա։',
+    'err.network': 'Կապի սխալ։ Ստուգիր ինտերնետը և փորձիր նորից։', 'err.rate': 'Չափազանց շատ փորձեր։ Սպասիր մի քիչ և փորձիր նորից։',
+    'err.generic': 'Ինչ-որ բան սխալ գնաց։ Փորձիր նորից։', 'err.saveFailed': 'Տվյալները չհաջողվեց պահպանել սերվերում։',
+    'err.noServer': 'Սերվերին միանալ չհաջողվեց։ Թարմացրու էջը։',
+    'profile.note': 'Տվյալները պահվում են ապահով սերվերում։ PIN կոդը և Face ID-ն գործում են միայն այս սարքում։'
+  });
+  Object.assign(I18N.ru, {
+    'err.wrong': 'Неверный e-mail или пароль.',
+    'auth.email': 'E-mail', 'auth.forgot': 'Забыли пароль?',
+    'auth.resetTitle': 'Восстановление пароля', 'auth.resetSub': 'Введите e-mail — мы отправим ссылку для восстановления.',
+    'auth.sendLink': 'Отправить ссылку', 'auth.linkSent': 'Ссылка отправлена. Проверьте почту (и папку «Спам»).', 'auth.back': '← Назад',
+    'auth.newPassTitle': 'Задайте новый пароль', 'auth.newPassSave': 'Сохранить пароль', 'auth.passUpdated': 'Пароль изменён ✓',
+    'auth.checkEmail': 'Регистрация прошла успешно. Подтвердите e-mail по ссылке из письма, затем войдите.',
+    'auth.loading': 'Загрузка...', 'auth.demo': 'Ваши данные хранятся на защищённом сервере и доступны с любого устройства.',
+    'err.notConfirmed': 'E-mail ещё не подтверждён. Проверьте почту.', 'err.emailTaken': 'Аккаунт с этим e-mail уже существует.',
+    'err.network': 'Ошибка соединения. Проверьте интернет и попробуйте снова.', 'err.rate': 'Слишком много попыток. Подождите немного.',
+    'err.generic': 'Что-то пошло не так. Попробуйте снова.', 'err.saveFailed': 'Не удалось сохранить данные на сервере.',
+    'err.noServer': 'Не удалось подключиться к серверу. Обновите страницу.',
+    'profile.note': 'Данные хранятся на защищённом сервере. PIN-код и Face ID работают только на этом устройстве.'
+  });
+  Object.assign(I18N.en, {
+    'err.wrong': 'Wrong email or password.',
+    'auth.email': 'Email', 'auth.forgot': 'Forgot password?',
+    'auth.resetTitle': 'Reset password', 'auth.resetSub': "Enter your email and we'll send you a reset link.",
+    'auth.sendLink': 'Send link', 'auth.linkSent': 'Link sent. Check your email (and the Spam folder).', 'auth.back': '← Back',
+    'auth.newPassTitle': 'Set a new password', 'auth.newPassSave': 'Save password', 'auth.passUpdated': 'Password changed ✓',
+    'auth.checkEmail': "You're registered! Confirm your email using the link we sent, then log in.",
+    'auth.loading': 'Loading...', 'auth.demo': 'Your data is stored on a secure server and available on any device.',
+    'err.notConfirmed': 'Email not confirmed yet. Check your inbox.', 'err.emailTaken': 'An account with this email already exists.',
+    'err.network': 'Connection error. Check your internet and try again.', 'err.rate': 'Too many attempts. Please wait a bit and try again.',
+    'err.generic': 'Something went wrong. Try again.', 'err.saveFailed': "Couldn't save your data to the server.",
+    'err.noServer': "Couldn't connect to the server. Refresh the page.",
+    'profile.note': 'Your data is stored on a secure server. PIN and Face ID work only on this device.'
+  });
+
   let lang = S.get('bb_lang');
   if (!I18N[lang]) lang = 'hy';
   const t = (key, vars) => {
@@ -440,6 +495,7 @@
   function setLang(l) {
     if (!I18N[l]) return;
     lang = l; S.set('bb_lang', l);
+    if (state.uid && state.profile) saveProfile({ lang: l }).catch(() => {});
     document.documentElement.lang = l;
     document.title = t('app.name');
     refresh();
@@ -530,17 +586,60 @@
   }
 
   const state = { user: null, data: null, tab: 'home', authMode: 'login', authError: '', selecting: false, selected: new Set(), flash: {}, settingsOpen: false, sflash: {},
-    screen: 'app', pin: { mode: 'setup', input: '', first: '', error: null, fromSettings: false, shake: false }, bioAvailable: false, bioError: '' };
+    screen: 'app', pin: { mode: 'setup', input: '', first: '', error: null, fromSettings: false, shake: false }, bioAvailable: false, bioError: '',
+    uid: null, email: '', profile: null, booting: true, recovering: false, busy: false, authInfo: '', authEmail: '' };
 
-  const dataKey = u => 'bb_data_' + u.toLowerCase();
-  function loadData(user) {
-    let d = null;
-    try { const raw = S.get(dataKey(user)); if (raw) d = JSON.parse(raw); } catch (e) {}
-    if (!d) { d = defaultData(); S.set(dataKey(user), JSON.stringify(d)); }
-    if (!d.profile) d.profile = { displayName: '', avatar: '', subscribedEmail: '' };
-    return d;
+  // ---------- Սերվերի հետ աշխատանք ----------
+  /** Սխալը վերածում է թարգմանության բանալու */
+  function errKey(err) {
+    if (!err) return 'err.generic';
+    const m = String(err.message || err.error_description || err || '');
+    if (I18N.hy[m]) return m;
+    const low = m.toLowerCase();
+    if (low.includes('invalid login credentials')) return 'err.wrong';
+    if (low.includes('username_cooldown')) return 'set.usernameHint';
+    if (low.includes('email not confirmed')) return 'err.notConfirmed';
+    if (low.includes('already registered') || low.includes('already been registered')) return 'err.emailTaken';
+    if (low.includes('different from the old')) return 'err.samePass';
+    if (low.includes('password should be at least') || low.includes('weak password')) return 'err.shortPassword';
+    if (low.includes('unable to validate email') || low.includes('invalid format') || low.includes('email address') && low.includes('invalid')) return 'profile.badEmail';
+    if (err.status === 429 || low.includes('rate limit') || low.includes('too many')) return 'err.rate';
+    if (err.code === '23505' || low.includes('duplicate key')) return 'err.exists';
+    if (low.includes('failed to fetch') || low.includes('network') || low.includes('load failed')) return 'err.network';
+    return 'err.generic';
   }
-  const save = () => S.set(dataKey(state.user), JSON.stringify(state.data));
+
+  let toastTimer = null;
+  function toast(text) {
+    const el = document.getElementById('toast'); if (!el) return;
+    el.textContent = text; el.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+  }
+
+  const secKey = () => 'bb_sec_' + state.uid;
+  /** PIN-ը և Face ID-ն պահվում են միայն այս սարքում */
+  function currentAccount() { try { return JSON.parse(S.get(secKey()) || '{}'); } catch (e) { return {}; } }
+  function updateAccount(fn) { const a = currentAccount(); fn(a); S.set(secKey(), JSON.stringify(a)); return a; }
+
+  let saveTimer = null;
+  /** Պահպանում է բյուջեն սերվերում (փոքր ուշացումով, որ շատ հարցումներ չլինեն) */
+  function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flushSave, 600); }
+  async function flushSave() {
+    clearTimeout(saveTimer); saveTimer = null;
+    if (!sb || !state.uid || !state.data) return;
+    const payload = JSON.parse(JSON.stringify(state.data));
+    payload.profile = { subscribedEmail: (state.data.profile && state.data.profile.subscribedEmail) || '' };
+    try {
+      const { error } = await sb.from('budgets').upsert({ user_id: state.uid, data: payload, updated_at: new Date().toISOString() });
+      if (error) throw error;
+    } catch (e) { toast(t('err.saveFailed')); }
+  }
+  async function saveProfile(fields) {
+    if (!sb || !state.uid) return;
+    const { error } = await sb.from('profiles').update(fields).eq('id', state.uid);
+    if (error) throw error;
+    Object.assign(state.profile, fields);
+  }
 
   // ---------- Հաշվարկներ ----------
   const envById = id => state.data.envelopes.find(e => e.id === id);
@@ -556,88 +655,130 @@
   const shownName = () => (state.data.profile.displayName || state.user);
 
   // ---------- Մուտք / Գրանցում ----------
-  const loadUsers = () => { try { return JSON.parse(S.get('bb_users') || '[]'); } catch (e) { return []; } };
-  const saveUsers = u => S.set('bb_users', JSON.stringify(u));
-
-  async function register(username, password, confirm) {
-    const name = username.trim();
-    validateUsername(name);
-    if (password.length < 6) throw new Error('err.shortPassword');
-    if (password !== confirm) throw new Error('err.mismatch');
-    const users = loadUsers();
-    if (users.some(u => u.username.toLowerCase() === name.toLowerCase())) throw new Error('err.exists');
-    const salt = uid();
-    users.push({ username: name, salt: salt, hash: await sha256(salt + password), createdAt: Date.now() });
-    saveUsers(users);
-    startSession(name, true);
-  }
-
-  async function login(username, password) {
-    const name = username.trim();
-    const user = loadUsers().find(u => u.username.toLowerCase() === name.toLowerCase());
-    if (!user || user.hash !== await sha256(user.salt + password)) throw new Error('err.wrong');
-    startSession(user.username, false);
-  }
-
   function validateUsername(name) {
     if (name.length < 3) throw new Error('err.shortUsername');
     if (!/^[\p{L}\p{N}_.\-]+$/u.test(name)) throw new Error('err.invalidUsername');
   }
 
-  const currentAccount = () => loadUsers().find(u => u.username === state.user);
+  async function usernameFree(name) {
+    const { data, error } = await sb.rpc('username_available', { name: name });
+    if (error) throw error;
+    return !!data;
+  }
+
+  async function register(email, username, password, confirm) {
+    email = email.trim(); const name = username.trim();
+    if (!isEmail(email)) throw new Error('profile.badEmail');
+    validateUsername(name);
+    if (password.length < 6) throw new Error('err.shortPassword');
+    if (password !== confirm) throw new Error('err.mismatch');
+    if (!(await usernameFree(name))) throw new Error('err.exists');
+    const res = await sb.auth.signUp({ email: email, password: password,
+      options: { data: { username: name }, emailRedirectTo: location.origin + location.pathname } });
+    if (res.error) throw res.error;
+    const u = res.data && res.data.user;
+    if (u && Array.isArray(u.identities) && u.identities.length === 0) throw new Error('err.emailTaken');
+    if (res.data.session) { await enterWithSession(res.data.session, true, false); return; }
+    // Եթե Supabase-ում միացված է «Confirm email»-ը
+    state.authMode = 'login'; state.authInfo = 'auth.checkEmail'; state.authEmail = email; render();
+  }
+
+  async function login(email, password) {
+    email = email.trim();
+    if (!isEmail(email)) throw new Error('profile.badEmail');
+    const { data, error } = await sb.auth.signInWithPassword({ email: email, password: password });
+    if (error) throw error;
+    await enterWithSession(data.session, false, false);
+  }
+
+  async function sendReset(email) {
+    email = email.trim();
+    if (!isEmail(email)) throw new Error('profile.badEmail');
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    if (error) throw error;
+  }
+
+  async function setNewPassword(p1, p2) {
+    if (p1.length < 6) throw new Error('err.shortPassword');
+    if (p1 !== p2) throw new Error('err.mismatch');
+    const { error } = await sb.auth.updateUser({ password: p1 });
+    if (error) throw error;
+  }
+
+  /** Մուտքից հետո բեռնում է պրոֆիլը և բյուջեն սերվերից */
+  async function enterWithSession(session, isNew, fromBoot) {
+    state.uid = session.user.id; state.email = session.user.email;
+    state.booting = true; render();
+    let created = false;
+    try {
+      let res = await sb.from('profiles').select('*').eq('id', state.uid).maybeSingle();
+      if (res.error) throw res.error;
+      let prof = res.data;
+      if (!prof) {
+        // Առաջին մուտք. ստեղծում ենք պրոֆիլը
+        const meta = session.user.user_metadata || {};
+        let uname = String(meta.username || (state.email || 'user').split('@')[0]).replace(/[^\p{L}\p{N}_.\-]/gu, '').slice(0, 24);
+        if (uname.length < 3) uname = 'user' + Math.floor(Math.random() * 9000 + 1000);
+        for (let i = 0; i < 3 && !prof; i++) {
+          const ins = await sb.from('profiles').insert({ id: state.uid, username: uname, display_name: '', avatar_url: '', lang: lang }).select().single();
+          if (!ins.error) prof = ins.data;
+          else if (errKey(ins.error) === 'err.exists') uname = uname.slice(0, 24) + '_' + Math.floor(Math.random() * 900 + 100);
+          else throw ins.error;
+        }
+        if (!prof) throw new Error('err.generic');
+        created = true;
+      }
+      const b = await sb.from('budgets').select('data').eq('user_id', state.uid).maybeSingle();
+      if (b.error) throw b.error;
+      let data = b.data && b.data.data && Array.isArray(b.data.data.envelopes) ? b.data.data : null;
+      if (!data) {
+        data = defaultData();
+        const up = await sb.from('budgets').upsert({ user_id: state.uid, data: data });
+        if (up.error) throw up.error;
+      }
+      data.incomes = data.incomes || []; data.expenses = data.expenses || [];
+      data.profile = { displayName: prof.display_name || '', avatar: prof.avatar_url || '',
+                       subscribedEmail: (data.profile && data.profile.subscribedEmail) || '' };
+      state.profile = prof; state.user = prof.username; state.data = data;
+      if (prof.lang && I18N[prof.lang] && prof.lang !== lang) { lang = prof.lang; S.set('bb_lang', lang); }
+    } catch (e) {
+      state.booting = false; state.user = null; state.data = null; state.uid = null;
+      try { await sb.auth.signOut(); } catch (x) {}
+      state.authError = errKey(e); render(); return;
+    }
+    state.booting = false; state.tab = 'home'; state.flash = {};
+    const sec = currentAccount();
+    if (sec.pin && fromBoot) { lockApp(); return; }
+    if (!sec.pin && (isNew || created || (!fromBoot && !sec.pinSkipped))) { startPinSetup(false); return; }
+    state.screen = 'app'; render();
+  }
+
   function usernameLockedUntil() {
-    const acc = currentAccount();
-    const until = acc && acc.usernameChangedAt ? acc.usernameChangedAt + USERNAME_COOLDOWN : 0;
+    const ts = state.profile && state.profile.username_changed_at ? Date.parse(state.profile.username_changed_at) : 0;
+    const until = ts ? ts + USERNAME_COOLDOWN : 0;
     return until > Date.now() ? until : 0;
   }
 
-  /** Մուտքանունի փոփոխություն. 7 օրը մեկ անգամ, տվյալները տեղափոխվում են նոր անվան տակ */
-  function changeUsername(newName) {
+  /** Մուտքանունի փոփոխություն. 7 օրը մեկ անգամ */
+  async function changeUsername(newName) {
     const name = newName.trim();
     if (usernameLockedUntil()) throw new Error('set.usernameHint');
     if (name === state.user) throw new Error('set.usernameSame');
     validateUsername(name);
-    const users = loadUsers();
-    const me = users.find(u => u.username === state.user);
-    if (!me) throw new Error('err.wrong');
-    if (users.some(u => u !== me && u.username.toLowerCase() === name.toLowerCase())) throw new Error('err.exists');
-    const oldKey = dataKey(state.user), newKey = dataKey(name);
-    me.username = name;
-    me.usernameChangedAt = Date.now();
-    saveUsers(users);
-    S.set(newKey, JSON.stringify(state.data));
-    if (oldKey !== newKey) S.del(oldKey);
+    if (name.toLowerCase() !== state.user.toLowerCase() && !(await usernameFree(name))) throw new Error('err.exists');
+    const now = new Date().toISOString();
+    await saveProfile({ username: name, username_changed_at: now });
     state.user = name;
-    S.set('bb_session', name);
   }
 
   async function changePassword(current, next, repeat) {
-    const users = loadUsers();
-    const me = users.find(u => u.username === state.user);
-    if (!me || me.hash !== await sha256(me.salt + current)) throw new Error('err.curPass');
     if (next.length < 6) throw new Error('err.shortPassword');
     if (next !== repeat) throw new Error('err.mismatch');
-    if (await sha256(me.salt + next) === me.hash) throw new Error('err.samePass');
-    me.salt = uid();
-    me.hash = await sha256(me.salt + next);
-    saveUsers(users);
-  }
-
-  function updateAccount(fn) {
-    const users = loadUsers();
-    const me = users.find(u => u.username === state.user);
-    if (me) { fn(me); saveUsers(users); }
-    return me;
-  }
-
-  function startSession(name, isNew) {
-    state.user = name; state.data = loadData(name); state.tab = 'home'; state.flash = {};
-    S.set('bb_session', name);
-    const acc = currentAccount() || {};
-    // Գրանցումից հետո կամ եթե PIN դեռ չկա (և «Հետո» չի սեղմվել)՝ տանում ենք PIN ստեղծելու էջ
-    if (!acc.pin && (isNew || !acc.pinSkipped)) { startPinSetup(false); return; }
-    state.screen = 'app';
-    render();
+    const chk = await sb.auth.signInWithPassword({ email: state.email, password: current });
+    if (chk.error) { const k = errKey(chk.error); throw new Error(k === 'err.wrong' ? 'err.curPass' : k); }
+    if (current === next) throw new Error('err.samePass');
+    const { error } = await sb.auth.updateUser({ password: next });
+    if (error) throw error;
   }
 
   // ---------- PIN կոդ ----------
@@ -702,7 +843,7 @@
       const left = PIN_MAX_ATTEMPTS - (me ? me.pinAttempts : PIN_MAX_ATTEMPTS);
       if (left <= 0) {
         updateAccount(m => { m.pinAttempts = 0; });
-        logout(); state.authError = 'err.pinLocked'; render(); return;
+        logout('err.pinLocked'); return;
       }
       pinError('pin.wrong', { n: left });
     }
@@ -752,11 +893,13 @@
     } catch (e) {}
   }
 
-  function logout() {
-    state.user = null; state.data = null; state.selecting = false; state.selected.clear();
-    state.authMode = 'login'; state.authError = ''; state.flash = {}; state.screen = 'app';
+  async function logout(errorKey) {
+    if (saveTimer) await flushSave();
+    try { if (sb) await sb.auth.signOut(); } catch (e) {}
+    state.user = null; state.data = null; state.uid = null; state.profile = null; state.email = '';
+    state.selecting = false; state.selected.clear();
+    state.authMode = 'login'; state.authError = errorKey || ''; state.authInfo = ''; state.flash = {}; state.screen = 'app';
     closeModal();
-    S.del('bb_session');
     render();
   }
 
@@ -785,7 +928,8 @@
   function render() {
     document.documentElement.lang = lang;
     document.title = t('app.name');
-    if (!state.user) { root.innerHTML = authView(); return; }
+    if (state.booting) { root.innerHTML = loadingView(); return; }
+    if (!state.user || state.recovering) { root.innerHTML = authView(); return; }
     if (state.screen === 'pin-setup' || state.screen === 'locked') { root.innerHTML = pinView(); return; }
     if (state.screen === 'bio-offer') { root.innerHTML = bioOfferView(); return; }
     const views = { home: homeView, tx: txView, summary: summaryView, env: envView, profile: profileView };
@@ -831,24 +975,47 @@
       '<button class="btn btn-soft" data-action="bio-later">' + (state.bioError ? 'OK' : t('pin.skip')) + '</button></div></div>';
   }
 
+  function loadingView() {
+    return '<div class="pin-screen"><div class="logo" style="margin:0">👛</div><div class="spinner"></div><div class="muted">' + t('auth.loading') + '</div></div>';
+  }
+
   function authView() {
-    const reg = state.authMode === 'register';
+    const mode = state.recovering ? 'newpass' : state.authMode;
+    const busy = state.busy ? ' disabled' : '';
+    const err = state.authError ? '<div class="error">⚠️ ' + esc(t(state.authError)) + '</div>' : '';
+    const info = state.authInfo ? '<div class="info">✓ ' + esc(t(state.authInfo)) + '</div>' : '';
+    const emailField = '<input class="field" name="email" type="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="' + t('auth.email') + '" value="' + esc(state.authEmail || '') + '">';
+    let body = '';
+    if (mode === 'login' || mode === 'register') {
+      const reg = mode === 'register';
+      body = '<div class="seg"><button class="' + (!reg ? 'on' : '') + '" data-action="auth-mode" data-id="login">' + t('auth.login') + '</button>' +
+        '<button class="' + (reg ? 'on' : '') + '" data-action="auth-mode" data-id="register">' + t('auth.register') + '</button></div>' +
+        '<form id="auth-form" class="stack" autocomplete="on">' + emailField +
+        (reg ? '<input class="field" name="username" placeholder="' + t('auth.username') + '" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="30">' : '') +
+        '<input class="field" name="password" type="password" placeholder="' + t('auth.password') + '" autocomplete="' + (reg ? 'new-password' : 'current-password') + '">' +
+        (reg ? '<input class="field" name="confirm" type="password" placeholder="' + t('auth.confirm') + '" autocomplete="new-password">' : '') +
+        err + info +
+        '<button class="btn btn-primary" type="submit" style="margin-top:16px"' + busy + '>' + (state.busy ? '…' : (reg ? t('auth.doRegister') : t('auth.doLogin'))) + '</button>' +
+        (reg ? '<div class="hint" style="text-align:center">' + t('auth.rules') + '</div>' : '<div style="text-align:center"><button type="button" class="text-link" data-action="auth-mode" data-id="reset">' + t('auth.forgot') + '</button></div>') +
+        '</form>';
+    } else if (mode === 'reset') {
+      body = '<h2 style="text-align:center;margin:26px 0 6px;font-size:20px">' + t('auth.resetTitle') + '</h2>' +
+        '<div class="muted" style="text-align:center;margin-bottom:16px">' + t('auth.resetSub') + '</div>' +
+        '<form id="auth-form" class="stack">' + emailField + err + info +
+        '<button class="btn btn-primary" type="submit" style="margin-top:16px"' + busy + '>' + (state.busy ? '…' : t('auth.sendLink')) + '</button>' +
+        '<div style="text-align:center"><button type="button" class="text-link" data-action="auth-mode" data-id="login">' + t('auth.back') + '</button></div></form>';
+    } else {
+      body = '<h2 style="text-align:center;margin:26px 0 16px;font-size:20px">' + t('auth.newPassTitle') + '</h2>' +
+        '<form id="auth-form" class="stack">' +
+        '<input class="field" name="password" type="password" placeholder="' + t('set.newPass') + '" autocomplete="new-password">' +
+        '<input class="field" name="confirm" type="password" placeholder="' + t('set.newPass2') + '" autocomplete="new-password">' + err +
+        '<button class="btn btn-primary" type="submit" style="margin-top:16px"' + busy + '>' + (state.busy ? '…' : t('auth.newPassSave')) + '</button></form>';
+    }
     return '<div class="auth">' +
       '<div class="auth-top">' + flagsHTML('mini') + '</div>' +
       '<div class="logo">👛</div>' +
       '<div style="text-align:center"><div class="title" style="margin:0">' + t('app.name') + '</div><div class="muted">' + t('app.tagline') + '</div></div>' +
-      '<div class="seg"><button class="' + (!reg ? 'on' : '') + '" data-action="auth-mode" data-id="login">' + t('auth.login') + '</button>' +
-      '<button class="' + (reg ? 'on' : '') + '" data-action="auth-mode" data-id="register">' + t('auth.register') + '</button></div>' +
-      '<form id="auth-form" class="stack" autocomplete="off">' +
-      '<input class="field" name="username" placeholder="' + t('auth.username') + '" autocapitalize="none" autocorrect="off" spellcheck="false">' +
-      '<input class="field" name="password" type="password" placeholder="' + t('auth.password') + '">' +
-      (reg ? '<input class="field" name="confirm" type="password" placeholder="' + t('auth.confirm') + '">' : '') +
-      (state.authError ? '<div class="error">⚠️ ' + esc(t(state.authError)) + '</div>' : '') +
-      '<button class="btn btn-primary" type="submit" style="margin-top:16px">' + (reg ? t('auth.doRegister') : t('auth.doLogin')) + '</button>' +
-      (reg ? '<div class="hint" style="text-align:center">' + t('auth.rules') + '</div>' : '') +
-      '</form>' +
-      '<div class="demo-note">' + t('auth.demo') + '</div>' +
-      '</div>';
+      body + '<div class="demo-note">' + t('auth.demo') + '</div></div>';
   }
 
   function homeView() {
@@ -995,12 +1162,6 @@
       '<div class="hint">' + (sel ? t('env.hintSel') : t('env.hint')) + '</div>';
   }
 
-  function subscribeURL(email) {
-    if (!SUBSCRIBE_FORM_URL || SUBSCRIBE_FORM_URL.indexOf('EMAIL') < 0) return '';
-    return SUBSCRIBE_FORM_URL.replace('/viewform', '/formResponse').replace('EMAIL', encodeURIComponent(email)) +
-      (SUBSCRIBE_FORM_URL.indexOf('?') >= 0 ? '&' : '?') + 'submit=Submit';
-  }
-
   function profileView() {
     const d = state.data, p = d.profile, f = state.flash;
     const sub = p.subscribedEmail
@@ -1008,13 +1169,13 @@
         '<span class="send done" aria-label="' + t('profile.subDone') + '">' + ICONS.check + '</span></div>' +
         '<div class="ok">' + t('profile.subDone') + '</div>'
       : '<div class="sub-row"><input class="field" id="sub-email" type="email" inputmode="email" autocapitalize="none" placeholder="' + t('profile.emailPh') + '">' +
-        '<a class="send off" id="sub-send" href="#" target="_blank" rel="noopener" aria-label="Send">' + ICONS.send + '</a></div>' +
+        '<button class="send off" id="sub-send" data-action="subscribe" aria-label="Send" style="border:0">' + ICONS.send + '</button></div>' +
         (f.sub ? '<div class="' + (f.subOk ? 'ok' : 'error') + '">' + esc(t(f.sub)) + '</div>' : '');
 
     return '<div class="title">' + t('tab.profile') + '</div>' +
       '<div class="card profile-card">' + avatarHTML(96) +
       '<div class="bold" style="font-size:20px;margin-top:12px">' + esc(shownName()) + '</div>' +
-      '<div class="small muted">@' + esc(state.user) + '</div></div>' +
+      '<div class="small muted">@' + esc(state.user) + (state.email ? ' · ' + esc(state.email) : '') + '</div></div>' +
       '<div class="list" style="margin-top:12px"><button class="list-btn settings-btn accent" data-action="open-settings">' +
       '<span>' + t('profile.settings') + '</span><span class="muted">›</span></button></div>' +
 
@@ -1055,6 +1216,7 @@
       '<div class="sub-row"><input class="field" id="display-name" maxlength="40" placeholder="' + t('profile.namePh') + '" value="' + esc(p.displayName || '') + '">' +
       '<button class="btn-small" data-action="save-name">' + t('profile.save') + '</button></div>' + msg('name') +
 
+      '<div class="label">' + t('auth.email') + '</div><div class="sub-row"><input class="field" value="' + esc(state.email || '') + '" disabled></div>' +
       '<div class="label">' + t('set.username') + '</div>' +
       '<div class="sub-row"><input class="field" id="new-username" maxlength="30" value="' + esc(state.user) + '" autocapitalize="none" autocorrect="off" spellcheck="false"' + (lockedUntil ? ' disabled' : '') + '>' +
       '<button class="btn-small" data-action="save-username"' + (lockedUntil ? ' disabled' : '') + '>' + t('set.change') + '</button></div>' +
@@ -1101,12 +1263,8 @@
   function refresh() { render(); if (state.settingsOpen && state.user) renderSettings(); }
 
   function updateSubscribeLink() {
-    const input = document.getElementById('sub-email'), a = document.getElementById('sub-send');
-    if (!input || !a) return;
-    const email = input.value.trim();
-    a.classList.toggle('off', !email);
-    const url = isEmail(email) ? subscribeURL(email) : '';
-    a.setAttribute('href', url || '#');
+    const input = document.getElementById('sub-email'), b = document.getElementById('sub-send');
+    if (input && b) b.classList.toggle('off', !input.value.trim());
   }
 
   // ---------- Ավատար ----------
@@ -1124,9 +1282,11 @@
         c.width = size; c.height = size;
         const side = Math.min(img.width, img.height);
         c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
-        try { state.data.profile.avatar = c.toDataURL('image/jpeg', 0.85); save(); state.sflash = {}; }
-        catch (e) { state.sflash = { sec: 'photo', key: 'profile.photoErr' }; }
-        refresh();
+        let url = '';
+        try { url = c.toDataURL('image/jpeg', 0.82); } catch (e) { fail(); return; }
+        saveProfile({ avatar_url: url })
+          .then(() => { state.data.profile.avatar = url; state.sflash = {}; refresh(); })
+          .catch(err => { state.sflash = { sec: 'photo', key: errKey(err) }; refresh(); });
       };
       img.src = reader.result;
     };
@@ -1236,27 +1396,12 @@
   document.addEventListener('click', e => {
     if (e.target.classList && e.target.classList.contains('overlay')) { closeModal(); return; }
 
-    // Բաժանորդագրության «ուղարկել» կոճակը (իրական հղում է)
-    const send = e.target.closest('#sub-send');
-    if (send) {
-      const input = document.getElementById('sub-email');
-      const email = input ? input.value.trim() : '';
-      state.flash = {};
-      if (!isEmail(email)) { e.preventDefault(); state.flash.sub = 'profile.badEmail'; render(); restoreEmail(email); return; }
-      const url = subscribeURL(email);
-      if (!url) { e.preventDefault(); state.flash.sub = 'profile.subOff'; render(); restoreEmail(email); return; }
-      // Հղումը բացվում է նոր ներդիրում և ուղարկում է հասցեն Google Form-ին
-      state.data.profile.subscribedEmail = email; save();
-      setTimeout(render, 0);
-      return;
-    }
-
     const el = e.target.closest('[data-action]'); if (!el || el.disabled) return;
     const id = el.dataset.id;
     switch (el.dataset.action) {
       case 'tab': state.tab = id; state.selecting = false; state.selected.clear(); state.flash = {}; render(); try { window.scrollTo(0, 0); } catch (err) {} break;
       case 'lang': setLang(id); break;
-      case 'auth-mode': state.authMode = id; state.authError = ''; render(); break;
+      case 'auth-mode': state.authMode = id; state.authError = ''; state.authInfo = ''; render(); break;
       case 'open-income': openIncome(); break;
       case 'open-expense': openExpense(); break;
       case 'close-modal': closeModal(); break;
@@ -1295,7 +1440,7 @@
       case 'pin-back': pinBack(); break;
       case 'pin-skip': updateAccount(me => { me.pinSkipped = true; }); state.screen = 'app'; render(); break;
       case 'pin-cancel': finishToSettings('', true); state.sflash = {}; renderSettings(); break;
-      case 'pin-forgot': logout(); state.authError = 'pin.forgotMsg'; render(); break;
+      case 'pin-forgot': logout('pin.forgotMsg'); break;
       case 'pin-setup-settings': startPinSetup(true); break;
       case 'pin-remove':
         confirmDialog(t('c.pinRemoveTitle'), t('c.pinRemoveMsg'), t('c.remove'), () => {
@@ -1316,30 +1461,53 @@
           .catch(() => { state.sflash = { sec: 'security', key: 'bio.unavailable' }; refresh(); });
         break;
       case 'bio-off': updateAccount(me => { delete me.bio; }); state.sflash = { sec: 'security', ok: true, key: 'bio.disabled' }; refresh(); break;
+      case 'subscribe': {
+        const input = document.getElementById('sub-email');
+        const email = input ? input.value.trim() : '';
+        state.flash = {};
+        if (!isEmail(email)) { state.flash.sub = 'profile.badEmail'; render(); restoreEmail(email); break; }
+        el.disabled = true;
+        sb.from('subscribers').insert({ user_id: state.uid, email: email })
+          .then(({ error }) => {
+            if (error) throw error;
+            state.data.profile.subscribedEmail = email; save(); render();
+          })
+          .catch(err => { state.flash.sub = errKey(err); render(); restoreEmail(email); });
+        break;
+      }
       case 'save-name': {
         const input = document.getElementById('display-name');
-        state.data.profile.displayName = input ? input.value.trim().slice(0, 40) : '';
-        save(); state.sflash = { sec: 'name', ok: true, key: 'profile.saved' }; refresh(); break;
+        const name = input ? input.value.trim().slice(0, 40) : '';
+        saveProfile({ display_name: name })
+          .then(() => { state.data.profile.displayName = name; state.sflash = { sec: 'name', ok: true, key: 'profile.saved' }; refresh(); })
+          .catch(err => { state.sflash = { sec: 'name', key: errKey(err) }; refresh(); });
+        break;
       }
-      case 'avatar-remove': state.data.profile.avatar = ''; save(); state.sflash = {}; refresh(); break;
+      case 'avatar-remove':
+        saveProfile({ avatar_url: '' })
+          .then(() => { state.data.profile.avatar = ''; state.sflash = {}; refresh(); })
+          .catch(err => { state.sflash = { sec: 'photo', key: errKey(err) }; refresh(); });
+        break;
       case 'save-username': {
         const input = document.getElementById('new-username');
         const value = input ? input.value : '';
-        try { changeUsername(value); state.sflash = { sec: 'username', ok: true, key: 'set.usernameSaved' }; refresh(); }
-        catch (err) {
-          state.sflash = { sec: 'username', key: err.message }; refresh();
-          const again = document.getElementById('new-username'); if (again && !again.disabled) again.value = value;
-        }
+        el.disabled = true;
+        changeUsername(value)
+          .then(() => { state.sflash = { sec: 'username', ok: true, key: 'set.usernameSaved' }; refresh(); })
+          .catch(err => {
+            state.sflash = { sec: 'username', key: errKey(err) }; refresh();
+            const again = document.getElementById('new-username'); if (again && !again.disabled) again.value = value;
+          });
         break;
       }
       case 'save-password': {
         const v = i => { const el = document.getElementById(i); return el ? el.value : ''; };
         changePassword(v('cur-pass'), v('new-pass'), v('new-pass2'))
           .then(() => { state.sflash = { sec: 'password', ok: true, key: 'set.passSaved' }; refresh(); })
-          .catch(err => { state.sflash = { sec: 'password', key: err.message }; refresh(); });
+          .catch(err => { state.sflash = { sec: 'password', key: errKey(err) }; refresh(); });
         break;
       }
-      case 'logout': confirmDialog(t('c.logoutTitle'), t('c.logoutMsg'), t('c.logoutOk'), logout); break;
+      case 'logout': confirmDialog(t('c.logoutTitle'), t('c.logoutMsg'), t('c.logoutOk'), () => logout()); break;
     }
   });
 
@@ -1375,31 +1543,53 @@
   document.addEventListener('submit', async e => {
     if (e.target.id !== 'auth-form') return;
     e.preventDefault();
+    if (state.busy) return;
+    if (!sb) { state.authError = 'err.noServer'; render(); return; }
     const f = e.target;
     const val = n => { const el = f.querySelector('[name="' + n + '"]'); return el ? el.value : ''; };
-    const u = val('username'), p = val('password');
+    const email = val('email'), username = val('username'), p = val('password'), c = val('confirm');
+    const mode = state.recovering ? 'newpass' : state.authMode;
+    state.authEmail = email; state.authError = ''; state.authInfo = ''; state.busy = true; render();
     try {
-      if (state.authMode === 'login') await login(u, p);
-      else await register(u, p, val('confirm'));
-      state.authError = '';
+      if (mode === 'login') await login(email, p);
+      else if (mode === 'register') await register(email, username, p, c);
+      else if (mode === 'reset') { await sendReset(email); state.authInfo = 'auth.linkSent'; }
+      else {
+        await setNewPassword(p, c);
+        state.recovering = false; state.busy = false;
+        try { history.replaceState(null, '', location.pathname); } catch (x) {}
+        const { data } = await sb.auth.getSession();
+        if (data.session) { toast(t('auth.passUpdated')); await enterWithSession(data.session, false, false); return; }
+        state.authMode = 'login'; state.authInfo = 'auth.passUpdated';
+      }
     } catch (err) {
-      state.authError = I18N.hy[err.message] ? err.message : 'err.wrong';
+      state.authError = errKey(err);
+    }
+    state.busy = false;
+    if (!state.user || state.recovering) {
       render();
       const nf = document.getElementById('auth-form');
-      if (nf) nf.querySelector('[name="username"]').value = u;
+      if (nf && username) { const u = nf.querySelector('[name="username"]'); if (u) u.value = username; }
     }
   });
 
   // ---------- Սկիզբ ----------
-  const session = S.get('bb_session');
-  checkBioAvailable();
-  if (session && loadUsers().some(u => u.username === session)) {
-    state.user = session; state.data = loadData(session);
-    const acc = currentAccount();
-    if (acc && acc.pin) { lockApp(); } else { render(); }
-  } else {
-    render();
+  async function boot() {
+    checkBioAvailable();
+    if (!sb) { state.booting = false; state.authError = 'err.noServer'; render(); return; }
+    // Գաղտնաբառի վերականգնման հղումով եկած լինելու դեպքում
+    if (/type=recovery/.test(location.hash)) state.recovering = true;
+    sb.auth.onAuthStateChange(event => {
+      if (event === 'PASSWORD_RECOVERY') { state.recovering = true; state.booting = false; state.authError = ''; render(); }
+    });
+    try {
+      const { data } = await sb.auth.getSession();
+      if (data && data.session && !state.recovering) { await enterWithSession(data.session, false, true); return; }
+    } catch (e) { state.authError = 'err.network'; }
+    state.booting = false; render();
   }
+  render();
+  boot();
 })();
 </script>
 </body>
