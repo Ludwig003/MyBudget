@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#4f46e5">
-<title>Իմ բյուջեն</title>
+<title>MyBudget</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Բյուջե">
+<meta name="apple-mobile-web-app-title" content="MyBudget">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -452,7 +452,8 @@
   const LANGS = [['hy', 'Հայերեն'], ['ru', 'Русский'], ['en', 'English']];
 
   Object.assign(I18N.hy, {
-    'err.wrong': 'Սխալ էլ. հասցե կամ գաղտնաբառ։',
+    'err.wrong': 'Սխալ մուտքանուն, էլ. հասցե կամ գաղտնաբառ։', 'auth.emailOrUsername': 'Էլ. հասցե կամ մուտքանուն',
+    'err.tooMany': 'Չափազանց շատ սխալ փորձեր։ Փորձիր 15 րոպե հետո։',
     'auth.email': 'Էլ. հասցե', 'auth.forgot': 'Մոռացե՞լ ես գաղտնաբառը',
     'auth.resetTitle': 'Գաղտնաբառի վերականգնում', 'auth.resetSub': 'Մուտքագրիր էլ. հասցեդ, և կուղարկենք վերականգնման հղում։',
     'auth.sendLink': 'Ուղարկել հղումը', 'auth.linkSent': 'Հղումն ուղարկված է։ Ստուգիր էլ. փոստդ (նաև Spam-ը)։', 'auth.back': '← Վերադառնալ',
@@ -466,7 +467,8 @@
     'profile.note': 'Տվյալները պահվում են ապահով սերվերում։ PIN կոդը և Face ID-ն գործում են միայն այս սարքում։'
   });
   Object.assign(I18N.ru, {
-    'err.wrong': 'Неверный e-mail или пароль.',
+    'err.wrong': 'Неверный логин, e-mail или пароль.', 'auth.emailOrUsername': 'E-mail или логин',
+    'err.tooMany': 'Слишком много неудачных попыток. Попробуйте через 15 минут.',
     'auth.email': 'E-mail', 'auth.forgot': 'Забыли пароль?',
     'auth.resetTitle': 'Восстановление пароля', 'auth.resetSub': 'Введите e-mail — мы отправим ссылку для восстановления.',
     'auth.sendLink': 'Отправить ссылку', 'auth.linkSent': 'Ссылка отправлена. Проверьте почту (и папку «Спам»).', 'auth.back': '← Назад',
@@ -480,7 +482,8 @@
     'profile.note': 'Данные хранятся на защищённом сервере. PIN-код и Face ID работают только на этом устройстве.'
   });
   Object.assign(I18N.en, {
-    'err.wrong': 'Wrong email or password.',
+    'err.wrong': 'Wrong username, email or password.', 'auth.emailOrUsername': 'Email or username',
+    'err.tooMany': 'Too many failed attempts. Try again in 15 minutes.',
     'auth.email': 'Email', 'auth.forgot': 'Forgot password?',
     'auth.resetTitle': 'Reset password', 'auth.resetSub': "Enter your email and we'll send you a reset link.",
     'auth.sendLink': 'Send link', 'auth.linkSent': 'Link sent. Check your email (and the Spam folder).', 'auth.back': '← Back',
@@ -506,7 +509,7 @@
     lang = l; S.set('bb_lang', l);
     if (state.uid && state.profile) saveProfile({ lang: l }).catch(() => {});
     document.documentElement.lang = l;
-    document.title = t('app.name');
+    document.title = 'MyBudget';
     refresh();
   }
 
@@ -607,6 +610,7 @@
     const low = m.toLowerCase();
     if (low.includes('invalid login credentials')) return 'err.wrong';
     if (low.includes('username_cooldown')) return 'set.usernameHint';
+    if (low.includes('too_many_attempts')) return 'err.tooMany';
     if (low.includes('email not confirmed')) return 'err.notConfirmed';
     if (low.includes('already registered') || low.includes('already been registered')) return 'err.emailTaken';
     if (low.includes('different from the old')) return 'err.samePass';
@@ -692,9 +696,17 @@
     state.authMode = 'login'; state.authInfo = 'auth.checkEmail'; state.authEmail = email; render();
   }
 
-  async function login(email, password) {
-    email = email.trim();
-    if (!isEmail(email)) throw new Error('profile.badEmail');
+  /** Մուտք email-ով կամ մուտքանունով */
+  async function login(identifier, password) {
+    let email = identifier.trim();
+    if (!email || !password) throw new Error('err.wrong');
+    if (email.indexOf('@') < 0) {
+      // Մուտքանունով. սերվերը email-ը վերադարձնում է միայն ճիշտ գաղտնաբառի դեպքում
+      const r = await sb.rpc('email_for_login', { p_username: email, p_password: password });
+      if (r.error) throw r.error;
+      if (!r.data) throw new Error('err.wrong');
+      email = r.data;
+    } else if (!isEmail(email)) throw new Error('profile.badEmail');
     const { data, error } = await sb.auth.signInWithPassword({ email: email, password: password });
     if (error) throw error;
     await enterWithSession(data.session, false, false);
@@ -936,7 +948,7 @@
 
   function render() {
     document.documentElement.lang = lang;
-    document.title = t('app.name');
+    document.title = 'MyBudget';
     if (state.booting) { root.innerHTML = loadingView(); return; }
     if (!state.user || state.recovering) { root.innerHTML = authView(); return; }
     if (state.screen === 'pin-setup' || state.screen === 'locked') { root.innerHTML = pinView(); return; }
@@ -993,7 +1005,9 @@
     const busy = state.busy ? ' disabled' : '';
     const err = state.authError ? '<div class="error">⚠️ ' + esc(t(state.authError)) + '</div>' : '';
     const info = state.authInfo ? '<div class="info">✓ ' + esc(t(state.authInfo)) + '</div>' : '';
-    const emailField = '<input class="field" name="email" type="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="' + t('auth.email') + '" value="' + esc(state.authEmail || '') + '">';
+    const emailField = mode === 'login'
+      ? '<input class="field" name="email" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="' + t('auth.emailOrUsername') + '" value="' + esc(state.authEmail || '') + '">'
+      : '<input class="field" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="' + t('auth.email') + '" value="' + esc(state.authEmail || '') + '">';
     let body = '';
     if (mode === 'login' || mode === 'register') {
       const reg = mode === 'register';
