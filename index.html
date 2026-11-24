@@ -196,6 +196,27 @@
   .text-link { border: 0; background: none; color: var(--accent); font-size: 14px; padding: 4px 0; margin-top: 12px; }
   .spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--soft); border-top-color: var(--accent); animation: spin .8s linear infinite; margin: 20px auto; }
   @keyframes spin { to { transform: rotate(360deg) } }
+  /* Նոր ֆունկցիաներ */
+  .tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .tool { position: relative; background: var(--card); border: 0; border-radius: 16px; padding: 14px 4px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+  .tool .em { font-size: 26px; }
+  .tool-badge { position: absolute; top: 8px; right: 10px; background: var(--accent); color: #fff; border-radius: 99px; font-size: 11px; min-width: 18px; height: 18px; display: grid; place-items: center; padding: 0 5px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--line); background: var(--card); border-radius: 99px; padding: 7px 12px; font-size: 14px; font-weight: 500; }
+  .chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .safe-big { font-size: 30px; font-weight: 700; margin: 4px 0; letter-spacing: -.3px; }
+  .streak { background: rgba(249,115,22,.15); color: var(--orange); border-radius: 99px; padding: 5px 10px; font-size: 13px; font-weight: 600; }
+  .tip { margin-top: 14px; }
+  .sheet.tall { min-height: 75vh; }
+  select.field { -webkit-appearance: none; appearance: none; }
+  .wr-card { background: var(--card); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .wr-card span { font-size: 13px; color: var(--muted); }
+  .wr-card b { font-size: 18px; }
+  .wr-hero { background: linear-gradient(135deg, #1e3a8a, #03061c); color: #fff; padding: 22px 18px; }
+  .wr-hero .small { color: #fff; }
+  .wr-big { font-size: 36px; font-weight: 800; letter-spacing: -.5px; }
+  .wr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .wr-grid .wr-card { margin-bottom: 0; }
   @keyframes up { from { transform: translateY(40px); opacity: .6 } to { transform: none; opacity: 1 } }
   @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
   @keyframes pop { from { transform: scale(.95); opacity: 0 } to { transform: none; opacity: 1 } }
@@ -543,6 +564,177 @@
     'profile.note': 'Your data is stored on a secure server. PIN and Face ID work only on this device.'
   });
 
+  // ---------- Նոր ֆունկցիաների թարգմանություններ ----------
+  Object.assign(I18N.hy, {
+    'safe.title': 'Այսօր կարող ես ծախսել', 'safe.over': 'Այսօր գերազանցել ես {v}-ով',
+    'safe.sub': 'Օրական բյուջե՝ {v} · մինչև ամսվա վերջ՝ {d} օր', 'safe.none': 'Նշիր օրական ծախսերի ծրարները «Ծրարներ» բաժնում, որ հաշվենք այսօրվա գումարը։',
+    'streak.days': '{n} օր անընդմեջ', 'streak.zero': 'Սկսիր շարքը այսօր', 'streak.checkin': 'Այսօր ծախս չունեմ ✓', 'streak.done': 'Այսօրը գրանցված է ✓',
+    'env.daily': '☀️ Օրական ծախսերի համար',
+    'tool.goals': 'Նպատակներ', 'tool.recurring': 'Կրկնվող', 'tool.debts': 'Պարտքեր', 'tool.challenges': 'Նվաճումներ', 'tool.advisor': 'Խորհրդատու', 'tool.wrapped': 'Ամփոփում',
+    'tip.title': '💡 Օրվա խորհուրդ', 'tip.next': 'Հաջորդը →',
+    'rem.title': '🔔 Հիշեցումներ', 'rem.today': 'այսօր', 'rem.inDays': '{n} օրից', 'rem.overdue': 'ուշացել է', 'rem.pay': 'Վճարել', 'rem.debtDue': 'Պարտքի ժամկետ',
+    'cur.label': 'Արժույթ', 'cur.rate': '1 {s} = {r} · ≈ {v}', 'cur.noRate': 'Փոխարժեքը դեռ հասանելի չէ։ Ստուգիր ինտերնետը։', 'cur.attr': 'Փոխարժեքներ՝',
+    'ocr.btn': '📷 Սկանավորել չեկը', 'ocr.beta': 'Բետա', 'ocr.loading': 'Բեռնվում է ճանաչման համակարգը (առաջին անգամ՝ մի քանի վայրկյան)...',
+    'ocr.reading': 'Կարդում եմ չեկը... {p}%', 'ocr.found': 'Գտնվեց՝ {v}։ Ստուգիր և պահպանիր։', 'ocr.notFound': 'Գումարը չհաջողվեց գտնել։ Մուտքագրիր ձեռքով։', 'ocr.failed': 'Չեկը չհաջողվեց կարդալ։ Փորձիր ավելի պարզ լուսանկար։',
+    'goal.title': '🎯 Նպատակներ', 'goal.new': 'Նոր նպատակ', 'goal.name': 'Անուն (օր.՝ iPhone)', 'goal.target': 'Նպատակային գումար', 'goal.deadline': 'Վերջնաժամկետ (ոչ պարտադիր)',
+    'goal.create': 'Ստեղծել', 'goal.empty': 'Դեռ նպատակներ չկան։ Ստեղծիր առաջինը։', 'goal.add': '＋ Ավելացնել գումար', 'goal.amount': 'Գումար', 'goal.from': 'Որ ծրարից',
+    'goal.addBtn': 'Ավելացնել', 'goal.done': '🎉 Նպատակը իրականացված է։', 'goal.eta': 'Ներկա տեմպով՝ մոտ {n} ամսում', 'goal.perMonth': 'Ժամկետին հասնելու համար՝ ամսական {v}',
+    'goal.left': 'Մնաց՝ {v}', 'goal.contribution': 'Նպատակին', 'goal.delTitle': 'Ջնջե՞լ նպատակը', 'goal.delMsg': 'Նպատակի համար հավաքված գումարը կվերադառնա ծրարներ։', 'goal.badInput': 'Լրացրու անունը և գումարը։',
+    'rec.title': '🔁 Կրկնվող վճարումներ', 'rec.empty': 'Ավելացրու վարձը, կոմունալները, հեռախոսը, բաժանորդագրությունները։', 'rec.new': 'Նոր վճարում', 'rec.name': 'Անուն (օր.՝ Վարձ)',
+    'rec.day': 'Ամսվա որ օրը', 'rec.add': 'Ավելացնել', 'rec.paid': 'Վճարված է ✓', 'rec.every': 'ամեն ամսի {d}-ին', 'rec.delTitle': 'Ջնջե՞լ վճարումը', 'rec.delMsg': 'Արդեն գրանցված ծախսերը կմնան։', 'rec.total': 'Ամսական ընդհանուր՝ {v}',
+    'debt.title': '🤝 Պարտքեր', 'debt.lent': 'Ինձ պարտք են', 'debt.owe': 'Ես պարտք եմ', 'debt.person': 'Ում / ումից', 'debt.due': 'Վերադարձի ժամկետ (ոչ պարտադիր)', 'debt.note': 'Նշում',
+    'debt.add': 'Ավելացնել', 'debt.empty': 'Ակտիվ պարտքեր չկան 👍', 'debt.settle': 'Մարվեց ✓', 'debt.settled': 'Մարված', 'debt.lentSum': 'Ինձ պարտք են՝ {v}', 'debt.oweSum': 'Ես պարտք եմ՝ {v}',
+    'debt.toMe': '{p}-ն ինձ պարտք է', 'debt.fromMe': 'Ես պարտք եմ {p}-ին', 'debt.delTitle': 'Ջնջե՞լ գրառումը', 'debt.badInput': 'Լրացրու անունը և գումարը։',
+    'ch.title': '🏆 Նվաճումներ և մարտահրավերներ', 'ch.weekly': 'Այս շաբաթ', 'ch.forever': 'Մշտական', 'ch.earned': 'Ստացված ✓', 'ch.times': '×{n}', 'ch.new': '🏆 Նոր նվաճում՝ {n}',
+    'ch.streak7': '7 օր անընդմեջ', 'ch.streak7d': 'Գրանցիր ծախսերդ 7 օր անընդմեջ', 'ch.streak30': '30 օր անընդմեջ', 'ch.streak30d': 'Ամբողջ ամիս՝ առանց բաց թողնելու',
+    'ch.log30': 'Ուշադիր հաշվապահ', 'ch.log30d': 'Գրանցիր 30 գործարք', 'ch.save10k': 'Խնայող շաբաթ', 'ch.save10kd': 'Այս շաբաթ նպատակներին ավելացրու 10,000 ֏',
+    'ch.nospend2': 'Զսպված շաբաթ', 'ch.nospend2d': 'Այս շաբաթ 2 օր անցկացրու առանց ծախսի', 'ch.firstGoal': 'Առաջին քայլ', 'ch.firstGoald': 'Ստեղծիր նպատակ և ավելացրու գումար',
+    'ch.debtFree': 'Ազնիվ խոսք', 'ch.debtFreed': 'Մարիր կամ փակիր մեկ պարտք',
+    'adv.title': '🧠 Կարո՞ղ եմ գնել', 'adv.sub': 'Գրիր գինը, և կասեմ, թե ինչպես դա կանդրադառնա բյուջեիդ վրա։', 'adv.price': 'Գինը', 'adv.what': 'Ինչ (ոչ պարտադիր)', 'adv.check': 'Ստուգել',
+    'adv.yesToday': '✅ Այո։ Սա տեղավորվում է այսօրվա բյուջեում։', 'adv.yes': '🟡 Կարող ես, բայց օրական բյուջեն կնվազի {a}-ից մինչև {b}։',
+    'adv.savings': '🟠 Միայն խնայողությունից։ «Խնայողություն» ծրարում կմնա {v}։', 'adv.no': '🔴 Հիմա՝ ոչ։ Պակասում է {v}։',
+    'adv.eta': 'Ներկա խնայողության տեմպով (ամսական ~{r}) կհավաքես մոտ {n} ամսում։', 'adv.noRate': 'Խնայողության տեմպը հաշվելու համար տվյալները դեռ քիչ են։', 'adv.makeGoal': '🎯 Դարձնել նպատակ',
+    'adv.note': 'Հաշվարկը հիմնված է քո ծրարների մնացորդների և վերջին ամիսների տվյալների վրա։',
+    'wr.title': '✨ Ամսվա ամփոփում', 'wr.income': 'Եկամուտ', 'wr.spent': 'Ծախս', 'wr.saved': 'Մնաց / խնայվեց', 'wr.vsPrev': 'նախորդ ամսվա համեմատ',
+    'wr.topEnv': 'Ամենաշատը ծախսել ես', 'wr.biggest': 'Ամենամեծ ծախսը', 'wr.busiest': 'Ամենածախսատար օրը', 'wr.tx': 'Գործարքներ', 'wr.goals': 'Նպատակներին', 'wr.noSpend': 'Օրեր առանց ծախսի',
+    'wr.empty': 'Այս ամսվա համար տվյալներ չկան։', 'wr.share': '📤 Կիսվել նկարով', 'wr.more': '{p}% ավելի', 'wr.less': '{p}% պակաս', 'wr.same': 'նույնքան',
+    'm.close': 'Փակել'
+  });
+  Object.assign(I18N.ru, {
+    'safe.title': 'Сегодня можно потратить', 'safe.over': 'Сегодня превышено на {v}',
+    'safe.sub': 'Дневной бюджет: {v} · до конца месяца: {d} дн.', 'safe.none': 'Отметьте конверты для ежедневных трат в разделе «Конверты», чтобы мы посчитали сумму на сегодня.',
+    'streak.days': '{n} дн. подряд', 'streak.zero': 'Начните серию сегодня', 'streak.checkin': 'Сегодня без трат ✓', 'streak.done': 'Сегодня отмечено ✓',
+    'env.daily': '☀️ Для ежедневных трат',
+    'tool.goals': 'Цели', 'tool.recurring': 'Регулярные', 'tool.debts': 'Долги', 'tool.challenges': 'Достижения', 'tool.advisor': 'Советник', 'tool.wrapped': 'Итоги',
+    'tip.title': '💡 Совет дня', 'tip.next': 'Следующий →',
+    'rem.title': '🔔 Напоминания', 'rem.today': 'сегодня', 'rem.inDays': 'через {n} дн.', 'rem.overdue': 'просрочено', 'rem.pay': 'Оплатить', 'rem.debtDue': 'Срок долга',
+    'cur.label': 'Валюта', 'cur.rate': '1 {s} = {r} · ≈ {v}', 'cur.noRate': 'Курс пока недоступен. Проверьте интернет.', 'cur.attr': 'Курсы:',
+    'ocr.btn': '📷 Сканировать чек', 'ocr.beta': 'Бета', 'ocr.loading': 'Загружается распознавание (в первый раз — несколько секунд)...',
+    'ocr.reading': 'Читаю чек... {p}%', 'ocr.found': 'Найдено: {v}. Проверьте и сохраните.', 'ocr.notFound': 'Не удалось найти сумму. Введите вручную.', 'ocr.failed': 'Не удалось прочитать чек. Попробуйте более чёткое фото.',
+    'goal.title': '🎯 Цели', 'goal.new': 'Новая цель', 'goal.name': 'Название (напр. iPhone)', 'goal.target': 'Целевая сумма', 'goal.deadline': 'Срок (необязательно)',
+    'goal.create': 'Создать', 'goal.empty': 'Целей пока нет. Создайте первую.', 'goal.add': '＋ Пополнить', 'goal.amount': 'Сумма', 'goal.from': 'Из какого конверта',
+    'goal.addBtn': 'Пополнить', 'goal.done': '🎉 Цель достигнута!', 'goal.eta': 'В текущем темпе — примерно за {n} мес.', 'goal.perMonth': 'Чтобы успеть к сроку: {v} в месяц',
+    'goal.left': 'Осталось: {v}', 'goal.contribution': 'В цель', 'goal.delTitle': 'Удалить цель?', 'goal.delMsg': 'Накопленная сумма вернётся в конверты.', 'goal.badInput': 'Заполните название и сумму.',
+    'rec.title': '🔁 Регулярные платежи', 'rec.empty': 'Добавьте аренду, коммуналку, связь, подписки.', 'rec.new': 'Новый платёж', 'rec.name': 'Название (напр. Аренда)',
+    'rec.day': 'День месяца', 'rec.add': 'Добавить', 'rec.paid': 'Оплачено ✓', 'rec.every': 'каждое {d} число', 'rec.delTitle': 'Удалить платёж?', 'rec.delMsg': 'Уже записанные расходы останутся.', 'rec.total': 'Всего в месяц: {v}',
+    'debt.title': '🤝 Долги', 'debt.lent': 'Мне должны', 'debt.owe': 'Я должен', 'debt.person': 'Кому / от кого', 'debt.due': 'Срок возврата (необязательно)', 'debt.note': 'Заметка',
+    'debt.add': 'Добавить', 'debt.empty': 'Активных долгов нет 👍', 'debt.settle': 'Погашено ✓', 'debt.settled': 'Погашенные', 'debt.lentSum': 'Мне должны: {v}', 'debt.oweSum': 'Я должен: {v}',
+    'debt.toMe': '{p} должен мне', 'debt.fromMe': 'Я должен: {p}', 'debt.delTitle': 'Удалить запись?', 'debt.badInput': 'Заполните имя и сумму.',
+    'ch.title': '🏆 Достижения и челленджи', 'ch.weekly': 'На этой неделе', 'ch.forever': 'Постоянные', 'ch.earned': 'Получено ✓', 'ch.times': '×{n}', 'ch.new': '🏆 Новое достижение: {n}',
+    'ch.streak7': '7 дней подряд', 'ch.streak7d': 'Записывайте траты 7 дней подряд', 'ch.streak30': '30 дней подряд', 'ch.streak30d': 'Целый месяц без пропусков',
+    'ch.log30': 'Внимательный бухгалтер', 'ch.log30d': 'Запишите 30 операций', 'ch.save10k': 'Экономная неделя', 'ch.save10kd': 'Отложите в цели 10 000 ֏ за неделю',
+    'ch.nospend2': 'Сдержанная неделя', 'ch.nospend2d': 'Проведите 2 дня недели без трат', 'ch.firstGoal': 'Первый шаг', 'ch.firstGoald': 'Создайте цель и пополните её',
+    'ch.debtFree': 'Слово держу', 'ch.debtFreed': 'Погасите или закройте один долг',
+    'adv.title': '🧠 Могу ли я купить?', 'adv.sub': 'Введите цену — я покажу, как это повлияет на бюджет.', 'adv.price': 'Цена', 'adv.what': 'Что (необязательно)', 'adv.check': 'Проверить',
+    'adv.yesToday': '✅ Да. Это укладывается в сегодняшний бюджет.', 'adv.yes': '🟡 Можно, но дневной бюджет снизится с {a} до {b}.',
+    'adv.savings': '🟠 Только из накоплений. В конверте «Накопления» останется {v}.', 'adv.no': '🔴 Пока нет. Не хватает {v}.',
+    'adv.eta': 'В текущем темпе накоплений (~{r} в месяц) соберёте примерно за {n} мес.', 'adv.noRate': 'Пока мало данных, чтобы оценить темп накоплений.', 'adv.makeGoal': '🎯 Сделать целью',
+    'adv.note': 'Расчёт основан на остатках конвертов и данных последних месяцев.',
+    'wr.title': '✨ Итоги месяца', 'wr.income': 'Доход', 'wr.spent': 'Расход', 'wr.saved': 'Осталось / сэкономлено', 'wr.vsPrev': 'по сравнению с прошлым месяцем',
+    'wr.topEnv': 'Больше всего потрачено', 'wr.biggest': 'Самая крупная трата', 'wr.busiest': 'Самый затратный день', 'wr.tx': 'Операции', 'wr.goals': 'В цели', 'wr.noSpend': 'Дней без трат',
+    'wr.empty': 'За этот месяц данных нет.', 'wr.share': '📤 Поделиться картинкой', 'wr.more': 'на {p}% больше', 'wr.less': 'на {p}% меньше', 'wr.same': 'столько же',
+    'm.close': 'Закрыть'
+  });
+  Object.assign(I18N.en, {
+    'safe.title': 'Safe to spend today', 'safe.over': 'Over today’s budget by {v}',
+    'safe.sub': 'Daily budget: {v} · {d} days left this month', 'safe.none': 'Mark your everyday envelopes in the Envelopes tab so we can calculate today’s amount.',
+    'streak.days': '{n}-day streak', 'streak.zero': 'Start your streak today', 'streak.checkin': 'No spending today ✓', 'streak.done': 'Today is logged ✓',
+    'env.daily': '☀️ For everyday spending',
+    'tool.goals': 'Goals', 'tool.recurring': 'Recurring', 'tool.debts': 'Debts', 'tool.challenges': 'Badges', 'tool.advisor': 'Advisor', 'tool.wrapped': 'Wrapped',
+    'tip.title': '💡 Tip of the day', 'tip.next': 'Next →',
+    'rem.title': '🔔 Reminders', 'rem.today': 'today', 'rem.inDays': 'in {n} days', 'rem.overdue': 'overdue', 'rem.pay': 'Pay', 'rem.debtDue': 'Debt due',
+    'cur.label': 'Currency', 'cur.rate': '1 {s} = {r} · ≈ {v}', 'cur.noRate': 'Exchange rate not available yet. Check your internet.', 'cur.attr': 'Rates by',
+    'ocr.btn': '📷 Scan receipt', 'ocr.beta': 'Beta', 'ocr.loading': 'Loading text recognition (first time takes a few seconds)...',
+    'ocr.reading': 'Reading the receipt... {p}%', 'ocr.found': 'Found: {v}. Check it and save.', 'ocr.notFound': 'Couldn’t find the total. Enter it manually.', 'ocr.failed': 'Couldn’t read the receipt. Try a clearer photo.',
+    'goal.title': '🎯 Goals', 'goal.new': 'New goal', 'goal.name': 'Name (e.g. iPhone)', 'goal.target': 'Target amount', 'goal.deadline': 'Deadline (optional)',
+    'goal.create': 'Create', 'goal.empty': 'No goals yet. Create your first one.', 'goal.add': '＋ Add money', 'goal.amount': 'Amount', 'goal.from': 'From envelope',
+    'goal.addBtn': 'Add', 'goal.done': '🎉 Goal reached!', 'goal.eta': 'At your current pace: about {n} months', 'goal.perMonth': 'To hit the deadline: {v} per month',
+    'goal.left': 'Left: {v}', 'goal.contribution': 'To goal', 'goal.delTitle': 'Delete goal?', 'goal.delMsg': 'The money saved for it returns to your envelopes.', 'goal.badInput': 'Enter a name and an amount.',
+    'rec.title': '🔁 Recurring payments', 'rec.empty': 'Add rent, utilities, phone, subscriptions.', 'rec.new': 'New payment', 'rec.name': 'Name (e.g. Rent)',
+    'rec.day': 'Day of month', 'rec.add': 'Add', 'rec.paid': 'Paid ✓', 'rec.every': 'every month on day {d}', 'rec.delTitle': 'Delete payment?', 'rec.delMsg': 'Expenses already logged will stay.', 'rec.total': 'Monthly total: {v}',
+    'debt.title': '🤝 Debts', 'debt.lent': 'Owed to me', 'debt.owe': 'I owe', 'debt.person': 'Who', 'debt.due': 'Due date (optional)', 'debt.note': 'Note',
+    'debt.add': 'Add', 'debt.empty': 'No active debts 👍', 'debt.settle': 'Settled ✓', 'debt.settled': 'Settled', 'debt.lentSum': 'Owed to me: {v}', 'debt.oweSum': 'I owe: {v}',
+    'debt.toMe': '{p} owes me', 'debt.fromMe': 'I owe {p}', 'debt.delTitle': 'Delete record?', 'debt.badInput': 'Enter a name and an amount.',
+    'ch.title': '🏆 Badges & challenges', 'ch.weekly': 'This week', 'ch.forever': 'All-time', 'ch.earned': 'Earned ✓', 'ch.times': '×{n}', 'ch.new': '🏆 New badge: {n}',
+    'ch.streak7': '7-day streak', 'ch.streak7d': 'Log your spending 7 days in a row', 'ch.streak30': '30-day streak', 'ch.streak30d': 'A whole month without missing a day',
+    'ch.log30': 'Careful accountant', 'ch.log30d': 'Log 30 transactions', 'ch.save10k': 'Saver week', 'ch.save10kd': 'Put 10,000 ֏ into goals this week',
+    'ch.nospend2': 'Mindful week', 'ch.nospend2d': 'Have 2 no-spend days this week', 'ch.firstGoal': 'First step', 'ch.firstGoald': 'Create a goal and add money to it',
+    'ch.debtFree': 'True to my word', 'ch.debtFreed': 'Settle one debt',
+    'adv.title': '🧠 Can I afford it?', 'adv.sub': 'Enter a price and I’ll show how it affects your budget.', 'adv.price': 'Price', 'adv.what': 'What (optional)', 'adv.check': 'Check',
+    'adv.yesToday': '✅ Yes. It fits in today’s budget.', 'adv.yes': '🟡 You can, but your daily budget drops from {a} to {b}.',
+    'adv.savings': '🟠 Only from savings. {v} will remain in your Savings envelope.', 'adv.no': '🔴 Not right now. You’re short by {v}.',
+    'adv.eta': 'At your current saving pace (~{r} per month) you’ll get there in about {n} months.', 'adv.noRate': 'Not enough data yet to estimate your saving pace.', 'adv.makeGoal': '🎯 Make it a goal',
+    'adv.note': 'Based on your envelope balances and recent months.',
+    'wr.title': '✨ Monthly Wrapped', 'wr.income': 'Income', 'wr.spent': 'Spent', 'wr.saved': 'Left / saved', 'wr.vsPrev': 'vs last month',
+    'wr.topEnv': 'You spent the most on', 'wr.biggest': 'Biggest expense', 'wr.busiest': 'Biggest spending day', 'wr.tx': 'Transactions', 'wr.goals': 'Into goals', 'wr.noSpend': 'No-spend days',
+    'wr.empty': 'No data for this month.', 'wr.share': '📤 Share as image', 'wr.more': '{p}% more', 'wr.less': '{p}% less', 'wr.same': 'the same',
+    'm.close': 'Close'
+  });
+
+  const TIPS = {
+    hy: [
+      'Նախ վճարիր ինքդ քեզ. եկամուտը ստանալուն պես մի մասը դիր խնայողության, հետո ծախսիր մնացածը։',
+      'Ստեղծիր «անվտանգության բարձ»՝ 3–6 ամսվա ծախսերի չափով, անսպասելի իրավիճակների համար։',
+      '24 ժամվա կանոն. ոչ անհրաժեշտ գնումից առաջ սպասիր մեկ օր։ Հաճախ ցանկությունն անցնում է։',
+      'Գրանցիր նույնիսկ փոքր ծախսերը. սուրճն ու տաքսին ամսվա վերջում մեծ գումար են կազմում։',
+      'Ստուգիր բաժանորդագրություններդ. հաճախ վճարում ենք ծառայությունների համար, որոնցից չենք օգտվում։',
+      'Գնելուց առաջ հարցրու քեզ՝ «պե՞տք է», թե՞ «ուզում եմ»։ Երկուսն էլ նորմալ են, բայց դրանք տարբեր ծրարներ են։',
+      'Եթե մի քանի պարտք ունես, առաջինը մարիր ամենաբարձր տոկոսադրույքով պարտքը։',
+      'Մեծ նպատակը բաժանիր փոքր քայլերի. 600,000 ֏-ը 12 ամսում ընդամենը ամսական 50,000 ֏ է։',
+      'Խանութ գնա ցուցակով և ոչ սոված. այդպես ավելորդ գնումները զգալիորեն քչանում են։',
+      'Աշխատավարձի բարձրացումից հետո ավելացրու ոչ միայն ծախսերը, այլև խնայողությունը։',
+      'Համեմատիր գները. նույն ապրանքը տարբեր խանութներում կարող է 20–30%-ով տարբերվել։',
+      'Ամսվա վերջում 10 րոպե տրամադրիր ամփոփմանը. ի՞նչն էր ավելորդ, ի՞նչը՝ արժեքավոր։',
+      'Փոքր, բայց կանոնավոր խնայողությունը ավելի ուժեղ է, քան մեծը, բայց պատահականը։',
+      'Գրի առ ֆինանսական նպատակներդ. գրված նպատակներին մարդիկ ավելի հաճախ են հասնում։',
+      'Մի պահիր բոլոր խնայողությունները մեկ տեղում. մի մասը կարող է աշխատել ավանդում կամ ներդրման մեջ։'
+    ],
+    ru: [
+      'Сначала заплатите себе: сразу после получения дохода отложите часть, а тратьте остальное.',
+      'Создайте «финансовую подушку» в размере 3–6 месяцев расходов на непредвиденный случай.',
+      'Правило 24 часов: перед необязательной покупкой подождите сутки. Часто желание проходит.',
+      'Записывайте даже мелкие траты: кофе и такси к концу месяца складываются в крупную сумму.',
+      'Проверьте подписки: мы часто платим за сервисы, которыми не пользуемся.',
+      'Перед покупкой спросите себя: «нужно» или «хочу»? Оба варианта нормальны, но это разные конверты.',
+      'Если долгов несколько, сначала гасите тот, у которого самая высокая ставка.',
+      'Разбейте большую цель на шаги: 600 000 ֏ за 12 месяцев — это всего 50 000 ֏ в месяц.',
+      'Ходите в магазин со списком и не на голодный желудок — лишних покупок станет заметно меньше.',
+      'После повышения зарплаты увеличивайте не только расходы, но и накопления.',
+      'Сравнивайте цены: один и тот же товар в разных магазинах может отличаться на 20–30%.',
+      'В конце месяца уделите 10 минут итогам: что было лишним, а что — ценным?',
+      'Небольшие, но регулярные накопления сильнее крупных, но случайных.',
+      'Запишите свои финансовые цели: записанных целей люди достигают чаще.',
+      'Не держите все накопления в одном месте: часть может работать на депозите или в инвестициях.'
+    ],
+    en: [
+      'Pay yourself first: as soon as income arrives, set part of it aside, then spend the rest.',
+      'Build an emergency fund worth 3–6 months of expenses for the unexpected.',
+      'The 24-hour rule: wait a day before any non-essential purchase. The urge often passes.',
+      'Log even small expenses: coffees and taxis add up to a big sum by the end of the month.',
+      'Review your subscriptions: we often pay for services we no longer use.',
+      'Before buying, ask: do I need it or want it? Both are fine, but they belong in different envelopes.',
+      'If you have several debts, pay off the one with the highest interest rate first.',
+      'Break a big goal into steps: 600,000 ֏ over 12 months is just 50,000 ֏ a month.',
+      'Shop with a list and never hungry — impulse purchases drop noticeably.',
+      'After a raise, increase your savings, not just your spending.',
+      'Compare prices: the same item can differ by 20–30% between stores.',
+      'Spend 10 minutes at month-end reviewing: what was unnecessary, what was worth it?',
+      'Small regular savings beat large occasional ones.',
+      'Write your financial goals down: people reach written goals more often.',
+      'Don’t keep all savings in one place: part of it can work in a deposit or investments.'
+    ]
+  };
+  const MONTHS_NOM = {
+    hy: ['Հունվար','Փետրվար','Մարտ','Ապրիլ','Մայիս','Հունիս','Հուլիս','Օգոստոս','Սեպտեմբեր','Հոկտեմբեր','Նոյեմբեր','Դեկտեմբեր'],
+    ru: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December']
+  };
+  const WEEK_FULL = {
+    hy: ['Կիրակի','Երկուշաբթի','Երեքշաբթի','Չորեքշաբթի','Հինգշաբթի','Ուրբաթ','Շաբաթ'],
+    ru: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+    en: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+  };
+
   let lang = S.get('bb_lang');
   if (!I18N[lang]) lang = 'hy';
   const t = (key, vars) => {
@@ -645,7 +837,7 @@
 
   const state = { user: null, data: null, tab: 'home', authMode: 'login', authError: '', selecting: false, selected: new Set(), flash: {}, settingsOpen: false, sflash: {},
     screen: 'app', pin: { mode: 'setup', input: '', first: '', error: null, fromSettings: false, shake: false }, bioAvailable: false, bioError: '',
-    uid: null, email: '', profile: null, booting: true, recovering: false, busy: false, authInfo: '', authEmail: '' };
+    uid: null, email: '', profile: null, booting: true, recovering: false, busy: false, authInfo: '', authEmail: '', panel: null, pf: {} };
 
   // ---------- Սերվերի հետ աշխատանք ----------
   /** Սխալը վերածում է թարգմանության բանալու */
@@ -708,9 +900,9 @@
   const totalBalance = () => sum(state.data.envelopes, balanceOf);
   const totalPercent = () => sum(state.data.envelopes, e => e.percent);
   const remaining = () => Math.max(0, 100 - totalPercent());
-  const todaySpent = () => sum(state.data.expenses.filter(x => x.date === todayISO()), x => x.amount);
+  const todaySpent = () => sum(state.data.expenses.filter(x => x.date === todayISO() && !x.goalId), x => x.amount);
   const monthIncome = () => sum(state.data.incomes.filter(x => isThisMonth(x.date)), x => x.amount);
-  const monthSpent = () => sum(state.data.expenses.filter(x => isThisMonth(x.date)), x => x.amount);
+  const monthSpent = () => sum(state.data.expenses.filter(x => isThisMonth(x.date) && !x.goalId), x => x.amount);
   const shownName = () => (state.data.profile.displayName || state.user);
 
   // ---------- Մուտք / Գրանցում ----------
@@ -804,6 +996,10 @@
         if (up.error) throw up.error;
       }
       data.incomes = data.incomes || []; data.expenses = data.expenses || [];
+      ['goals', 'recurring', 'debts', 'checkins'].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
+      if (!data.badges || typeof data.badges !== 'object' || Array.isArray(data.badges)) data.badges = {};
+      data.envelopes.forEach(e => { if (e.daily === undefined) e.daily = ['food', 'fun', 'other'].indexOf(e.key) >= 0; });
+      loadCachedRates(); fetchRates();
       data.profile = { displayName: prof.display_name || '', avatar: prof.avatar_url || '',
                        subscribedEmail: (data.profile && data.profile.subscribedEmail) || '' };
       state.profile = prof; state.user = prof.username; state.data = data;
@@ -1098,6 +1294,7 @@
       '<div><span>' + t('home.monthSpent') + '</span><b>' + amd(monthSpent()) + '</b></div></div></div>' +
       '<div class="actions"><button class="action green" data-action="open-income">' + t('home.income') + '</button>' +
       '<button class="action red" data-action="open-expense">' + t('home.expense') + '</button></div>' +
+      safeHTML() + remindersHTML() + toolsHTML() + tipHTML() +
       '<div class="label">' + t('home.envelopes') + '</div>' +
       (envs.length ? '<div class="stack">' + envs.map(envCard).join('') + '</div>' : '<div class="card muted">' + t('home.noEnv') + '</div>');
   }
@@ -1135,14 +1332,16 @@
     if (it.kind === 'income') {
       const i = it.x;
       return '<div class="item row"><div class="icon" style="background:rgba(34,197,94,.15)">⬇️</div>' +
-        '<div style="min-width:0"><div>' + esc(i.note || t('tx.income')) + '</div><div class="small muted">' + t('tx.split', { n: i.allocations.length }) + '</div></div>' +
+        '<div style="min-width:0"><div>' + esc(i.note || t('tx.income')) + '</div><div class="small muted">' + t('tx.split', { n: i.allocations.length }) +
+        (i.orig ? ' · ' + fmtNum(i.orig.amount) + ' ' + curSym(i.orig.cur) : '') + '</div></div>' +
         '<div class="spacer"></div><b style="color:var(--green);white-space:nowrap">+' + amd(i.amount) + '</b>' +
         '<button class="tx-del" data-action="del-income" data-id="' + i.id + '" aria-label="' + t('m.delete') + '">🗑</button></div>';
     }
     const e = it.x, env = envById(e.envelopeID);
-    const c = env ? colorOf(env) : COLORS.red;
-    return '<div class="item row"><div class="icon" style="background:' + c + '26">' + esc(env ? env.icon : '➖') + '</div>' +
-      '<div style="min-width:0"><div>' + esc(e.note || (env ? envName(env) : t('tx.expense'))) + '</div><div class="small muted">' + esc(env ? envName(env) : '') + '</div></div>' +
+    const c = e.goalId ? '#4f46e5' : env ? colorOf(env) : COLORS.red;
+    const sub = (e.goalId ? t('goal.contribution') + ' · ' : '') + (env ? envName(env) : '') + (e.orig ? ' · ' + fmtNum(e.orig.amount) + ' ' + curSym(e.orig.cur) : '');
+    return '<div class="item row"><div class="icon" style="background:' + c + '26">' + esc(e.goalId ? '🎯' : env ? env.icon : '➖') + '</div>' +
+      '<div style="min-width:0"><div>' + esc(e.note || (env ? envName(env) : t('tx.expense'))) + '</div><div class="small muted">' + esc(sub) + '</div></div>' +
       '<div class="spacer"></div><b style="white-space:nowrap">−' + amd(e.amount) + '</b>' +
       '<button class="tx-del" data-action="del-expense" data-id="' + e.id + '" aria-label="' + t('m.delete') + '">🗑</button></div>';
   }
@@ -1151,7 +1350,7 @@
     const inc = monthIncome(), sp = monthSpent(), diff = inc - sp;
     const slices = state.data.envelopes.map(env => ({
       name: envName(env), color: colorOf(env),
-      amount: sum(state.data.expenses.filter(x => x.envelopeID === env.id && isThisMonth(x.date)), x => x.amount)
+      amount: sum(state.data.expenses.filter(x => x.envelopeID === env.id && isThisMonth(x.date) && !x.goalId), x => x.amount)
     })).filter(s => s.amount > 0);
 
     let donut = '<div class="card muted">' + t('sum.noSpend') + '</div>';
@@ -1174,7 +1373,7 @@
     for (let k = 6; k >= 0; k--) {
       const d = new Date(); d.setDate(d.getDate() - k);
       const iso = isoOf(d);
-      days.push({ label: WEEK[lang][d.getDay()], amount: sum(state.data.expenses.filter(x => x.date === iso), x => x.amount) });
+      days.push({ label: WEEK[lang][d.getDay()], amount: sum(state.data.expenses.filter(x => x.date === iso && !x.goalId), x => x.amount) });
     }
     const max = Math.max(1, ...days.map(d => d.amount));
     const bars = days.map((d, i) => {
@@ -1184,6 +1383,7 @@
     }).join('');
 
     return '<div class="title">' + t('tab.summary') + '</div>' +
+      '<button class="btn btn-primary" style="margin-bottom:4px" data-action="open-panel" data-id="wrapped">' + t('wr.title') + '</button>' +
       '<div class="label">' + t('sum.month') + '</div><div class="list">' +
       '<div class="item row"><span>' + t('sum.income') + '</span><span class="spacer"></span><b style="color:var(--green)">' + amd(inc) + '</b></div>' +
       '<div class="item row"><span>' + t('sum.spent') + '</span><span class="spacer"></span><b style="color:var(--red)">' + amd(sp) + '</b></div>' +
@@ -1209,7 +1409,8 @@
         '<input class="name-input" data-env-name="' + env.id + '" value="' + esc(envName(env)) + '" maxlength="40"></div>' +
         '<div class="row" style="margin-top:10px"><span>' + t('env.ofIncome', { p: env.percent }) + '</span><span class="spacer"></span>' +
         '<button class="step" data-action="env-minus" data-id="' + env.id + '"' + (env.percent <= 0 ? ' disabled' : '') + '>−</button>' +
-        '<button class="step" data-action="env-plus" data-id="' + env.id + '"' + (rem <= 0 ? ' disabled' : '') + '>+</button></div></div>';
+        '<button class="step" data-action="env-plus" data-id="' + env.id + '"' + (rem <= 0 ? ' disabled' : '') + '>+</button></div>' +
+        '<button class="chip' + (env.daily ? ' on' : '') + '" style="margin-top:10px" data-action="env-daily" data-id="' + env.id + '">' + t('env.daily') + '</button></div>';
     }).join('');
 
     const footer = rem === 0
@@ -1329,7 +1530,7 @@
   function openSettings() { state.settingsOpen = true; state.sflash = {}; renderSettings(); }
 
   /** Թարմացնում է էջը և, եթե բաց է, կարգավորումների պատուհանը */
-  function refresh() { render(); if (state.settingsOpen && state.user) renderSettings(); }
+  function refresh() { render(); if (state.settingsOpen && state.user) renderSettings(); else if (state.panel && state.user) renderPanel(); }
 
   function updateSubscribeLink() {
     const input = document.getElementById('sub-email'), b = document.getElementById('sub-send');
@@ -1366,7 +1567,7 @@
   let onConfirm = null;
   let expenseEnvID = null;
 
-  function closeModal() { modal.innerHTML = ''; onConfirm = null; state.settingsOpen = false; state.sflash = {}; }
+  function closeModal() { modal.innerHTML = ''; onConfirm = null; state.settingsOpen = false; state.sflash = {}; state.panel = null; }
 
   function confirmDialog(title, message, okText, fn, single) {
     onConfirm = fn;
@@ -1381,19 +1582,23 @@
   }
 
   function openIncome() {
+    formCur = 'AMD';
     modal.innerHTML = '<div class="overlay"><div class="sheet">' + sheetHead('inc.title', 'inc-save', 'save-income') +
       '<div class="label">' + t('m.amount') + '</div><div class="stack">' +
       '<input class="field big" id="inc-amount" inputmode="decimal" placeholder="' + t('inc.amountPh') + '">' +
       '<input class="field" id="inc-note" placeholder="' + t('inc.notePh') + '" maxlength="60">' +
-      '<input class="field" id="inc-date" type="date" value="' + todayISO() + '"></div>' +
+      '<input class="field" id="inc-date" type="date" value="' + todayISO() + '"></div>' + currencyHTML('inc') +
       '<div id="inc-preview"></div></div></div>';
     updateIncomePreview();
+    fetchRates().then(updateIncomePreview);
     setTimeout(() => { const el = document.getElementById('inc-amount'); if (el) el.focus(); }, 50);
   }
 
   function updateIncomePreview() {
     const el = document.getElementById('inc-amount'); if (!el) return;
-    const parts = distribute(parseAmount(el.value) || 0, state.data.envelopes);
+    const value = parseAmount(el.value), amount = toAMD(value);
+    rateLine('inc', value);
+    const parts = distribute(amount || 0, state.data.envelopes);
     document.getElementById('inc-save').disabled = !parts.length;
     document.getElementById('inc-preview').innerHTML = parts.length
       ? '<div class="label">' + t('inc.split') + '</div><div class="list">' + parts.map(p => {
@@ -1404,37 +1609,42 @@
   }
 
   function saveIncome() {
-    const amount = parseAmount(document.getElementById('inc-amount').value);
+    const value = parseAmount(document.getElementById('inc-amount').value), amount = toAMD(value);
     const parts = distribute(amount || 0, state.data.envelopes);
     if (!parts.length) return;
-    state.data.incomes.push({
-      id: uid(), amount: amount, note: document.getElementById('inc-note').value.trim(),
-      date: document.getElementById('inc-date').value || todayISO(), allocations: parts, createdAt: Date.now()
-    });
-    save(); closeModal(); render();
+    const inc = { id: uid(), amount: amount, note: document.getElementById('inc-note').value.trim(),
+      date: document.getElementById('inc-date').value || todayISO(), allocations: parts, createdAt: Date.now() };
+    const o = origOf(value); if (o) inc.orig = o;
+    state.data.incomes.push(inc);
+    save(); checkBadges(); closeModal(); render();
   }
 
   function openExpense() {
     const envs = state.data.envelopes;
     if (!envs.length) { confirmDialog(t('exp.noEnvTitle'), t('exp.noEnvMsg'), t('m.ok'), () => {}, true); return; }
-    expenseEnvID = envs[0].id;
+    expenseEnvID = envs[0].id; formCur = 'AMD';
     modal.innerHTML = '<div class="overlay"><div class="sheet">' + sheetHead('exp.title', 'exp-save', 'save-expense') +
       '<div class="label">' + t('m.amount') + '</div><div class="stack">' +
       '<input class="field big" id="exp-amount" inputmode="decimal" placeholder="' + t('exp.amountPh') + '">' +
       '<input class="field" id="exp-note" placeholder="' + t('exp.notePh') + '" maxlength="60">' +
       '<input class="field" id="exp-date" type="date" value="' + todayISO() + '"></div>' +
+      '<div class="row" style="margin-top:12px"><label class="btn-ghost file-label accent">' + t('ocr.btn') + ' <span class="small muted">' + t('ocr.beta') + '</span>' +
+      '<input type="file" id="receipt-input" accept="image/*"></label></div><div class="hint" id="receipt-status"></div>' +
+      currencyHTML('exp') +
       '<div class="label">' + t('exp.from') + '</div><div class="list" id="exp-envs">' + envs.map(env =>
         '<button class="pick' + (env.id === expenseEnvID ? ' on' : '') + '" data-action="pick-env" data-id="' + env.id + '">' +
         '<span>' + esc(env.icon) + '</span><span>' + esc(envName(env)) + '</span><span class="check">✓</span></button>').join('') + '</div>' +
       '<div id="exp-info"></div></div></div>';
     updateExpenseInfo();
+    fetchRates().then(updateExpenseInfo);
     setTimeout(() => { const el = document.getElementById('exp-amount'); if (el) el.focus(); }, 50);
   }
 
   function updateExpenseInfo() {
     const box = document.getElementById('exp-info'); if (!box) return;
     const env = envById(expenseEnvID);
-    const amount = parseAmount(document.getElementById('exp-amount').value);
+    const value = parseAmount(document.getElementById('exp-amount').value), amount = toAMD(value);
+    rateLine('exp', value);
     document.getElementById('exp-save').disabled = !(amount && env);
     if (!env) { box.innerHTML = ''; return; }
     const b = balanceOf(env);
@@ -1443,13 +1653,13 @@
   }
 
   function saveExpense() {
-    const amount = parseAmount(document.getElementById('exp-amount').value);
+    const value = parseAmount(document.getElementById('exp-amount').value), amount = toAMD(value);
     if (!amount || !envById(expenseEnvID)) return;
-    state.data.expenses.push({
-      id: uid(), amount: amount, note: document.getElementById('exp-note').value.trim(),
-      date: document.getElementById('exp-date').value || todayISO(), envelopeID: expenseEnvID, createdAt: Date.now()
-    });
-    save(); closeModal(); render();
+    const exp = { id: uid(), amount: amount, note: document.getElementById('exp-note').value.trim(),
+      date: document.getElementById('exp-date').value || todayISO(), envelopeID: expenseEnvID, createdAt: Date.now() };
+    const o = origOf(value); if (o) exp.orig = o;
+    state.data.expenses.push(exp);
+    save(); checkBadges(); closeModal(); render();
   }
 
   function deleteEnvelopes(ids) {
@@ -1458,7 +1668,600 @@
     d.expenses = d.expenses.filter(x => !ids.has(x.envelopeID));
     d.incomes.forEach(i => { i.allocations = i.allocations.filter(a => !ids.has(a.envelopeID)); });
     d.incomes = d.incomes.filter(i => i.allocations.length > 0);
+    d.recurring = (d.recurring || []).filter(r => !ids.has(r.envelopeID));
     save();
+  }
+
+  // =====================================================================
+  // ՆՈՐ ՖՈՒՆԿՑԻԱՆԵՐ
+  // =====================================================================
+  const isSpend = x => !x.goalId;                       // նպատակներին փոխանցումը ծախս չի համարվում
+  const monthKey = d => d.getFullYear() + '-' + pad(d.getMonth() + 1);
+  const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+  const weekStart = () => { const d = new Date(); const wd = (d.getDay() + 6) % 7; d.setDate(d.getDate() - wd); return isoOf(d); };
+  const savingsEnv = () => state.data.envelopes.find(e => e.key === 'savings');
+
+  // ---------- Արժույթներ ----------
+  const CURRENCIES = [['AMD', '֏'], ['USD', '$'], ['EUR', '€'], ['RUB', '₽']];
+  const curSym = c => (CURRENCIES.find(x => x[0] === c) || ['', c])[1];
+  let rates = null;
+  function loadCachedRates() { try { const r = JSON.parse(S.get('bb_rates') || 'null'); if (r && r.perUnit) rates = r; } catch (e) {} }
+  async function fetchRates() {
+    if (rates && Date.now() - rates.fetched < 12 * 3600 * 1000) return;
+    try {
+      const res = await fetch('https://open.er-api.com/v6/latest/AMD');
+      const j = await res.json();
+      if (j.result !== 'success' || !j.rates) return;
+      const perUnit = {};
+      ['USD', 'EUR', 'RUB'].forEach(c => { if (j.rates[c]) perUnit[c] = 1 / j.rates[c]; });
+      rates = { perUnit: perUnit, fetched: Date.now() };
+      S.set('bb_rates', JSON.stringify(rates));
+    } catch (e) {}
+  }
+  const rateOf = c => c === 'AMD' ? 1 : (rates && rates.perUnit[c]) || null;
+  const fmtNum = n => (Math.round(n * 100) / 100).toLocaleString('en-US');
+  let formCur = 'AMD';
+
+  function currencyHTML(prefix) {
+    return '<div class="label">' + t('cur.label') + '</div><div class="chips" id="' + prefix + '-cur">' + CURRENCIES.map(c =>
+      '<button class="chip' + (formCur === c[0] ? ' on' : '') + '" data-action="pick-cur" data-id="' + c[0] + '" data-for="' + prefix + '">' + c[1] + ' ' + c[0] + '</button>').join('') +
+      '</div><div class="hint" id="' + prefix + '-rate"></div>';
+  }
+  /** Գումարը ֏-ով՝ ընտրված արժույթից, կամ null, եթե փոխարժեք չկա */
+  function toAMD(value) {
+    const r = rateOf(formCur);
+    if (!value || !r) return null;
+    return Math.round(value * r);
+  }
+  function rateLine(prefix, value) {
+    const el = document.getElementById(prefix + '-rate'); if (!el) return;
+    if (formCur === 'AMD') { el.innerHTML = ''; return; }
+    const r = rateOf(formCur);
+    if (!r) { el.innerHTML = '<span style="color:var(--orange)">' + t('cur.noRate') + '</span>'; return; }
+    el.innerHTML = esc(t('cur.rate', { s: curSym(formCur), r: amd(r), v: amd((value || 0) * r) })) +
+      ' · <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener" style="color:inherit">' + t('cur.attr') + ' ExchangeRate-API</a>';
+  }
+  function origOf(value) { return formCur === 'AMD' ? null : { amount: value, cur: formCur, rate: rateOf(formCur) }; }
+
+  // ---------- Օրական բյուջե ----------
+  function safeToday() {
+    const envs = state.data.envelopes.filter(e => e.daily);
+    if (!envs.length) return null;
+    const ids = new Set(envs.map(e => e.id)), today = todayISO();
+    const spentToday = sum(state.data.expenses.filter(x => x.date === today && isSpend(x) && ids.has(x.envelopeID)), x => x.amount);
+    const startBal = sum(envs, balanceOf) + spentToday;
+    const now = new Date();
+    const daysLeft = daysInMonth(now.getFullYear(), now.getMonth()) - now.getDate() + 1;
+    const perDay = Math.max(0, startBal) / daysLeft;
+    return { left: perDay - spentToday, perDay: perDay, daysLeft: daysLeft, flexible: sum(envs, balanceOf) };
+  }
+
+  // ---------- Շարք (streak) ----------
+  function activityDays() {
+    const d = state.data;
+    return new Set(d.incomes.map(x => x.date).concat(d.expenses.map(x => x.date), d.checkins || []));
+  }
+  function streakInfo() {
+    const days = activityDays();
+    const d = new Date(); let n = 0;
+    const todayDone = days.has(isoOf(d));
+    if (!todayDone) d.setDate(d.getDate() - 1);
+    while (days.has(isoOf(d))) { n++; d.setDate(d.getDate() - 1); }
+    let best = 0, run = 0, prev = null;
+    Array.from(days).sort().forEach(iso => {
+      const cur = toDate(iso);
+      run = prev && (cur - prev) / 86400000 === 1 ? run + 1 : 1;
+      best = Math.max(best, run); prev = cur;
+    });
+    return { current: n, best: Math.max(best, n), todayDone: todayDone };
+  }
+
+  // ---------- Կրկնվող վճարումներ և հիշեցումներ ----------
+  function recStatus(r) {
+    const now = new Date();
+    if (r.paidMonth === monthKey(now)) return { kind: 'paid' };
+    const due = Math.min(r.day, daysInMonth(now.getFullYear(), now.getMonth()));
+    const diff = due - now.getDate();
+    return { kind: diff < 0 ? 'overdue' : diff <= 3 ? 'soon' : 'later', diff: diff };
+  }
+  function dueLabel(diff) { return diff < 0 ? t('rem.overdue') : diff === 0 ? t('rem.today') : t('rem.inDays', { n: diff }); }
+  function payRecurring(id) {
+    const r = state.data.recurring.find(x => x.id === id); if (!r) return;
+    const env = envById(r.envelopeID) || state.data.envelopes[0];
+    if (env) state.data.expenses.push({ id: uid(), amount: r.amount, note: r.name, date: todayISO(), envelopeID: env.id, recurringId: r.id, createdAt: Date.now() });
+    r.paidMonth = monthKey(new Date());
+    save();
+  }
+  function remindersHTML() {
+    const items = [];
+    state.data.recurring.forEach(r => {
+      const st = recStatus(r);
+      if (st.kind === 'overdue' || st.kind === 'soon') items.push({ diff: st.diff,
+        html: '<div class="item row"><span>🔁</span><div style="min-width:0"><div>' + esc(r.name) + ' · <b>' + amd(r.amount) + '</b></div>' +
+          '<div class="small" style="color:' + (st.diff < 0 ? 'var(--red)' : 'var(--orange)') + '">' + dueLabel(st.diff) + '</div></div>' +
+          '<span class="spacer"></span><button class="btn-small" data-action="rec-pay" data-id="' + r.id + '">' + t('rem.pay') + '</button></div>' });
+    });
+    const today = toDate(todayISO());
+    state.data.debts.forEach(dbt => {
+      if (dbt.settled || !dbt.due) return;
+      const diff = Math.round((toDate(dbt.due) - today) / 86400000);
+      if (diff > 3) return;
+      items.push({ diff: diff, html: '<div class="item row"><span>🤝</span><div style="min-width:0"><div>' +
+        esc(t(dbt.type === 'lent' ? 'debt.toMe' : 'debt.fromMe', { p: dbt.person })) + ' · <b>' + amd(dbt.amount) + '</b></div>' +
+        '<div class="small" style="color:' + (diff < 0 ? 'var(--red)' : 'var(--orange)') + '">' + t('rem.debtDue') + ': ' + dueLabel(diff) + '</div></div>' +
+        '<span class="spacer"></span><button class="btn-ghost" data-action="open-panel" data-id="debts">›</button></div>' });
+    });
+    if (!items.length) return '';
+    items.sort((a, b) => a.diff - b.diff);
+    return '<div class="label">' + t('rem.title') + '</div><div class="list">' + items.map(i => i.html).join('') + '</div>';
+  }
+
+  // ---------- Օրվա խորհուրդ ----------
+  let tipOffset = 0;
+  function tipHTML() {
+    const list = TIPS[lang] || TIPS.hy;
+    const start = new Date(new Date().getFullYear(), 0, 0);
+    const day = Math.floor((new Date() - start) / 86400000);
+    const tip = list[(day + tipOffset) % list.length];
+    return '<div class="card tip"><div class="row"><b>' + t('tip.title') + '</b><span class="spacer"></span>' +
+      '<button class="text-link" style="margin:0" data-action="tip-next">' + t('tip.next') + '</button></div><div style="margin-top:8px">' + esc(tip) + '</div></div>';
+  }
+
+  // ---------- Գլխավոր էջի բլոկներ ----------
+  function safeHTML() {
+    const s = safeToday(), st = streakInfo();
+    let body;
+    if (!s) body = '<div class="small muted">' + t('safe.none') + '</div>';
+    else {
+      const over = s.left < 0;
+      body = '<div class="small muted">' + (over ? t('safe.over', { v: amd(-s.left) }) : t('safe.title')) + '</div>' +
+        '<div class="safe-big" style="color:' + (over ? 'var(--red)' : 'var(--green)') + '">' + amd(Math.max(0, s.left)) + '</div>' +
+        '<div class="small muted">' + t('safe.sub', { v: amd(s.perDay), d: s.daysLeft }) + '</div>';
+    }
+    const streak = '<div class="row" style="margin-top:12px;gap:8px;flex-wrap:wrap">' +
+      '<span class="streak">🔥 ' + (st.current ? t('streak.days', { n: st.current }) : t('streak.zero')) + '</span>' +
+      (st.todayDone ? '<span class="small muted">' + t('streak.done') + '</span>'
+                    : '<button class="btn-ghost" data-action="checkin">' + t('streak.checkin') + '</button>') + '</div>';
+    return '<div class="card" style="margin-top:14px">' + body + streak + '</div>';
+  }
+
+  function toolsHTML() {
+    const d = state.data;
+    const activeGoals = d.goals.filter(g => goalSaved(g) < g.target).length;
+    const activeDebts = d.debts.filter(x => !x.settled).length;
+    const earned = Object.keys(d.badges).length;
+    const tiles = [
+      ['goals', '🎯', t('tool.goals'), activeGoals || ''],
+      ['recurring', '🔁', t('tool.recurring'), d.recurring.length || ''],
+      ['debts', '🤝', t('tool.debts'), activeDebts || ''],
+      ['challenges', '🏆', t('tool.challenges'), earned || ''],
+      ['advisor', '🧠', t('tool.advisor'), ''],
+      ['wrapped', '✨', t('tool.wrapped'), '']
+    ];
+    return '<div class="tools">' + tiles.map(x =>
+      '<button class="tool" data-action="open-panel" data-id="' + x[0] + '"><span class="em">' + x[1] + '</span><span>' + x[2] + '</span>' +
+      (x[3] !== '' ? '<span class="tool-badge">' + x[3] + '</span>' : '') + '</button>').join('') + '</div>';
+  }
+
+  // ---------- Նպատակներ ----------
+  const goalSaved = g => sum(state.data.expenses.filter(x => x.goalId === g.id), x => x.amount);
+  function goalPace(g) {
+    const saved = goalSaved(g);
+    const left = Math.max(0, g.target - saved);
+    if (g.deadline) {
+      const now = new Date(), dl = toDate(g.deadline);
+      const months = Math.max(1, (dl.getFullYear() - now.getFullYear()) * 12 + dl.getMonth() - now.getMonth());
+      return t('goal.perMonth', { v: amd(left / months) });
+    }
+    const months = Math.max(1, (Date.now() - (g.created || Date.now())) / (30.44 * 86400000));
+    const perMonth = saved / months;
+    if (!(perMonth > 0)) return '';
+    return t('goal.eta', { n: Math.max(1, Math.ceil(left / perMonth)) });
+  }
+  const GOAL_EMOJI = ['🎯', '📱', '💻', '🚗', '✈️', '🏠', '🎓', '💍', '🎁', '🛡️'];
+
+  function goalsPanel() {
+    const pf = state.pf, d = state.data;
+    const envOpts = d.envelopes.map(e => '<option value="' + e.id + '"' + (savingsEnv() && savingsEnv().id === e.id ? ' selected' : '') + '>' + esc(e.icon + ' ' + envName(e)) + '</option>').join('');
+    const list = d.goals.length ? d.goals.map(g => {
+      const saved = goalSaved(g), p = Math.min(1, saved / g.target), done = saved >= g.target;
+      const adding = pf.addTo === g.id;
+      return '<div class="card" style="margin-bottom:10px"><div class="row"><span style="font-size:28px">' + esc(g.emoji || '🎯') + '</span>' +
+        '<div style="min-width:0;flex:1"><div class="bold">' + esc(g.name) + '</div><div class="small muted">' + amd(saved) + ' / ' + amd(g.target) + '</div></div>' +
+        '<button class="tx-del" data-action="goal-del" data-id="' + g.id + '">🗑</button></div>' +
+        '<div class="bar"><div style="width:' + (p * 100) + '%;background:' + (done ? 'var(--green)' : 'var(--accent)') + '"></div></div>' +
+        '<div class="small" style="color:' + (done ? 'var(--green)' : 'var(--muted)') + '">' + (done ? t('goal.done') : esc(t('goal.left', { v: amd(g.target - saved) }) + (goalPace(g) ? ' · ' + goalPace(g) : ''))) + '</div>' +
+        (adding
+          ? '<div class="stack" style="margin-top:10px"><input class="field" id="goal-amt" inputmode="decimal" placeholder="' + t('goal.amount') + '">' +
+            '<select class="field" id="goal-env">' + envOpts + '</select>' +
+            '<div class="row"><button class="btn btn-soft" data-action="goal-add-cancel">' + t('m.cancel') + '</button><button class="btn btn-primary" data-action="goal-add-save" data-id="' + g.id + '">' + t('goal.addBtn') + '</button></div></div>'
+          : (done ? '' : '<button class="text-link" data-action="goal-add" data-id="' + g.id + '">' + t('goal.add') + '</button>')) +
+        '</div>';
+    }).join('') : '<div class="card muted">' + t('goal.empty') + '</div>';
+    const emo = pf.emoji || '🎯';
+    const form = '<div class="label">' + t('goal.new') + '</div><div class="card stack">' +
+      '<div class="chips">' + GOAL_EMOJI.map(e => '<button class="chip' + (e === emo ? ' on' : '') + '" data-action="goal-emoji" data-id="' + e + '">' + e + '</button>').join('') + '</div>' +
+      '<input class="field" id="goal-name" maxlength="40" placeholder="' + t('goal.name') + '" value="' + esc(pf.name || '') + '">' +
+      '<input class="field" id="goal-target" inputmode="decimal" placeholder="' + t('goal.target') + '" value="' + esc(pf.target || '') + '">' +
+      '<div class="small muted">' + t('goal.deadline') + '</div><input class="field" id="goal-deadline" type="date">' +
+      (pf.err ? '<div class="error">' + t(pf.err) + '</div>' : '') +
+      '<button class="btn btn-primary" data-action="goal-create">' + t('goal.create') + '</button></div>';
+    return list + form;
+  }
+
+  // ---------- Կրկնվող վճարումների պանել ----------
+  function recurringPanel() {
+    const d = state.data, pf = state.pf;
+    const list = d.recurring.length ? '<div class="list">' + d.recurring.slice().sort((a, b) => a.day - b.day).map(r => {
+      const st = recStatus(r), env = envById(r.envelopeID);
+      const status = st.kind === 'paid' ? '<span class="small" style="color:var(--green)">' + t('rec.paid') + '</span>'
+        : '<button class="btn-small" data-action="rec-pay" data-id="' + r.id + '">' + t('rem.pay') + '</button>';
+      return '<div class="item row"><span>' + esc(env ? env.icon : '🔁') + '</span><div style="min-width:0;flex:1"><div>' + esc(r.name) + ' · <b>' + amd(r.amount) + '</b></div>' +
+        '<div class="small muted">' + t('rec.every', { d: r.day }) + (st.kind !== 'paid' && st.kind !== 'later' ? ' · <span style="color:' + (st.diff < 0 ? 'var(--red)' : 'var(--orange)') + '">' + dueLabel(st.diff) + '</span>' : '') + '</div></div>' +
+        status + '<button class="tx-del" data-action="rec-del" data-id="' + r.id + '">🗑</button></div>';
+    }).join('') + '</div><div class="hint">' + t('rec.total', { v: amd(sum(d.recurring, r => r.amount)) }) + '</div>'
+      : '<div class="card muted">' + t('rec.empty') + '</div>';
+    const envOpts = d.envelopes.map(e => '<option value="' + e.id + '"' + (e.key === 'fixed' ? ' selected' : '') + '>' + esc(e.icon + ' ' + envName(e)) + '</option>').join('');
+    const days = Array.from({ length: 31 }, (_, i) => '<option value="' + (i + 1) + '"' + (i + 1 === new Date().getDate() ? ' selected' : '') + '>' + (i + 1) + '</option>').join('');
+    const form = '<div class="label">' + t('rec.new') + '</div><div class="card stack">' +
+      '<input class="field" id="rec-name" maxlength="40" placeholder="' + t('rec.name') + '">' +
+      '<input class="field" id="rec-amount" inputmode="decimal" placeholder="' + t('goal.amount') + '">' +
+      '<select class="field" id="rec-env">' + envOpts + '</select>' +
+      '<div class="row"><span class="small muted" style="flex:1">' + t('rec.day') + '</span><select class="field" id="rec-day" style="width:90px">' + days + '</select></div>' +
+      (pf.err ? '<div class="error">' + t(pf.err) + '</div>' : '') +
+      '<button class="btn btn-primary" data-action="rec-create">' + t('rec.add') + '</button></div>';
+    return list + form;
+  }
+
+  // ---------- Պարտքեր ----------
+  function debtsPanel() {
+    const d = state.data, pf = state.pf, type = pf.type || 'lent';
+    const active = d.debts.filter(x => !x.settled), settled = d.debts.filter(x => x.settled);
+    const lentSum = sum(active.filter(x => x.type === 'lent'), x => x.amount), oweSum = sum(active.filter(x => x.type === 'owe'), x => x.amount);
+    const today = toDate(todayISO());
+    const row = x => {
+      let due = '';
+      if (x.due && !x.settled) {
+        const diff = Math.round((toDate(x.due) - today) / 86400000);
+        due = ' · <span style="color:' + (diff < 0 ? 'var(--red)' : diff <= 3 ? 'var(--orange)' : 'var(--muted)') + '">' + fmtDay(x.due) + '</span>';
+      }
+      return '<div class="item row"><span>' + (x.type === 'lent' ? '⬅️' : '➡️') + '</span><div style="min-width:0;flex:1"><div>' +
+        esc(t(x.type === 'lent' ? 'debt.toMe' : 'debt.fromMe', { p: x.person })) + '</div><div class="small muted">' + esc(x.note || '') + due + '</div></div>' +
+        '<b style="white-space:nowrap;color:' + (x.type === 'lent' ? 'var(--green)' : 'var(--red)') + '">' + amd(x.amount) + '</b>' +
+        (x.settled ? '' : '<button class="btn-small" data-action="debt-settle" data-id="' + x.id + '">✓</button>') +
+        '<button class="tx-del" data-action="debt-del" data-id="' + x.id + '">🗑</button></div>';
+    };
+    return '<div class="card row small"><span style="color:var(--green)">' + t('debt.lentSum', { v: amd(lentSum) }) + '</span><span class="spacer"></span><span style="color:var(--red)">' + t('debt.oweSum', { v: amd(oweSum) }) + '</span></div>' +
+      '<div class="label">&nbsp;</div>' + (active.length ? '<div class="list">' + active.map(row).join('') + '</div>' : '<div class="card muted">' + t('debt.empty') + '</div>') +
+      '<div class="label">' + t('debt.add') + '</div><div class="card stack">' +
+      '<div class="seg" style="margin:0"><button class="' + (type === 'lent' ? 'on' : '') + '" data-action="debt-type" data-id="lent">' + t('debt.lent') + '</button>' +
+      '<button class="' + (type === 'owe' ? 'on' : '') + '" data-action="debt-type" data-id="owe">' + t('debt.owe') + '</button></div>' +
+      '<input class="field" id="debt-person" maxlength="40" placeholder="' + t('debt.person') + '">' +
+      '<input class="field" id="debt-amount" inputmode="decimal" placeholder="' + t('goal.amount') + '">' +
+      '<input class="field" id="debt-note" maxlength="60" placeholder="' + t('debt.note') + '">' +
+      '<div class="small muted">' + t('debt.due') + '</div><input class="field" id="debt-due" type="date">' +
+      (pf.err ? '<div class="error">' + t(pf.err) + '</div>' : '') +
+      '<button class="btn btn-primary" data-action="debt-create">' + t('debt.add') + '</button></div>' +
+      (settled.length ? '<div class="label">' + t('debt.settled') + '</div><div class="list" style="opacity:.6">' + settled.slice(-10).reverse().map(row).join('') + '</div>' : '');
+  }
+
+  // ---------- Մարտահրավերներ և նվաճումներ ----------
+  function weekSpendFreeDays() {
+    const ws = toDate(weekStart()), today = toDate(todayISO());
+    const days = activityDays(); const first = Array.from(days).sort()[0];
+    let n = 0;
+    for (let d = new Date(ws); d < today; d.setDate(d.getDate() + 1)) {
+      const iso = isoOf(d);
+      if (first && iso >= first && !state.data.expenses.some(x => x.date === iso && isSpend(x))) n++;
+    }
+    return n;
+  }
+  const CHALLENGES = [
+    { id: 'streak7', icon: '🔥', target: 7, weekly: false, progress: () => streakInfo().best },
+    { id: 'streak30', icon: '🌟', target: 30, weekly: false, progress: () => streakInfo().best },
+    { id: 'log30', icon: '📝', target: 30, weekly: false, progress: () => state.data.incomes.length + state.data.expenses.length },
+    { id: 'firstGoal', icon: '🎯', target: 1, weekly: false, progress: () => state.data.goals.some(g => goalSaved(g) > 0) ? 1 : 0 },
+    { id: 'debtFree', icon: '🤝', target: 1, weekly: false, progress: () => state.data.debts.filter(x => x.settled).length },
+    { id: 'save10k', icon: '💰', target: 10000, money: true, weekly: true,
+      progress: () => { const ws = weekStart(); return sum(state.data.expenses.filter(x => x.goalId && x.date >= ws), x => x.amount); } },
+    { id: 'nospend2', icon: '🧘', target: 2, weekly: true, progress: weekSpendFreeDays }
+  ];
+  function checkBadges() {
+    if (!state.data) return;
+    const b = state.data.badges, ws = weekStart(); let changed = false;
+    CHALLENGES.forEach(c => {
+      if (c.progress() < c.target) return;
+      const key = c.weekly ? c.id + '@' + ws : c.id;
+      if (b[key]) return;
+      b[key] = todayISO(); changed = true;
+      toast(t('ch.new', { n: c.icon + ' ' + t('ch.' + c.id) }));
+    });
+    if (changed) save();
+  }
+  function challengesPanel() {
+    const b = state.data.badges, ws = weekStart();
+    const card = c => {
+      const prog = c.progress(), p = Math.min(1, prog / c.target);
+      const key = c.weekly ? c.id + '@' + ws : c.id;
+      const times = Object.keys(b).filter(k => k === c.id || k.indexOf(c.id + '@') === 0).length;
+      const earned = !!b[key];
+      return '<div class="card row" style="margin-bottom:10px' + (earned ? ';box-shadow:0 0 0 2px var(--green) inset' : '') + '">' +
+        '<span style="font-size:30px;' + (earned || times ? '' : 'filter:grayscale(1);opacity:.6') + '">' + c.icon + '</span>' +
+        '<div style="flex:1;min-width:0"><div class="bold">' + t('ch.' + c.id) + (times > 1 ? ' <span class="small muted">' + t('ch.times', { n: times }) + '</span>' : '') + '</div>' +
+        '<div class="small muted">' + t('ch.' + c.id + 'd') + '</div>' +
+        '<div class="bar"><div style="width:' + (p * 100) + '%;background:' + (earned ? 'var(--green)' : 'var(--accent)') + '"></div></div>' +
+        '<div class="small ' + (earned ? '' : 'muted') + '" style="' + (earned ? 'color:var(--green)' : '') + '">' +
+        (earned ? t('ch.earned') : (c.money ? amd(Math.min(prog, c.target)) + ' / ' + amd(c.target) : Math.min(prog, c.target) + ' / ' + c.target)) + '</div></div></div>';
+    };
+    const st = streakInfo();
+    return '<div class="card row"><span class="streak">🔥 ' + t('streak.days', { n: st.current }) + '</span><span class="spacer"></span><span class="small muted">max ' + st.best + '</span></div>' +
+      '<div class="label">' + t('ch.weekly') + '</div>' + CHALLENGES.filter(c => c.weekly).map(card).join('') +
+      '<div class="label">' + t('ch.forever') + '</div>' + CHALLENGES.filter(c => !c.weekly).map(card).join('');
+  }
+
+  // ---------- Խորհրդատու ----------
+  function monthlySavingRate() {
+    const now = new Date(), vals = [];
+    for (let k = 1; k <= 3; k++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - k, 1), mk = monthKey(d);
+      const inc = sum(state.data.incomes.filter(x => x.date.slice(0, 7) === mk), x => x.amount);
+      const sp = sum(state.data.expenses.filter(x => x.date.slice(0, 7) === mk && isSpend(x)), x => x.amount);
+      if (inc > 0 || sp > 0) vals.push(inc - sp);
+    }
+    if (vals.length) return sum(vals, v => v) / vals.length;
+    const sEnv = savingsEnv();
+    const inc = monthIncome();
+    return sEnv && inc ? inc * sEnv.percent / 100 : 0;
+  }
+  function advisorPanel() {
+    const pf = state.pf;
+    let result = '';
+    if (pf.price) {
+      const price = pf.price, s = safeToday(), sEnv = savingsEnv();
+      const flex = s ? s.flexible : 0, savBal = sEnv ? balanceOf(sEnv) : 0;
+      let lines = [];
+      if (s && price <= s.left) lines.push(t('adv.yesToday'));
+      else if (s && price <= flex) lines.push(t('adv.yes', { a: amd(s.perDay), b: amd(Math.max(0, flex - price) / s.daysLeft) }));
+      else if (price <= flex + savBal) lines.push(t('adv.savings', { v: amd(savBal - (price - flex)) }));
+      else {
+        const short = price - flex - Math.max(0, savBal);
+        lines.push(t('adv.no', { v: amd(short) }));
+        const rate = monthlySavingRate();
+        lines.push(rate > 0 ? t('adv.eta', { r: amd(rate), n: Math.max(1, Math.ceil(short / rate)) }) : t('adv.noRate'));
+        lines.push('<button class="btn btn-primary" style="margin-top:10px" data-action="adv-goal">' + t('adv.makeGoal') + '</button>');
+      }
+      result = '<div class="card stack" style="margin-top:12px">' + lines.map(l => l.indexOf('<button') === 0 ? l : '<div>' + esc(l) + '</div>').join('') +
+        '<div class="small muted">' + t('adv.note') + '</div></div>';
+    }
+    return '<div class="muted" style="margin:4px 4px 12px">' + t('adv.sub') + '</div><div class="card stack">' +
+      '<input class="field big" id="adv-price" inputmode="decimal" placeholder="' + t('adv.price') + '" value="' + (pf.price ? esc(String(pf.price)) : '') + '">' +
+      '<input class="field" id="adv-what" maxlength="40" placeholder="' + t('adv.what') + '" value="' + esc(pf.what || '') + '">' +
+      '<button class="btn btn-primary" data-action="adv-check">' + t('adv.check') + '</button></div>' + result;
+  }
+
+  // ---------- Ամսվա ամփոփում (Wrapped) ----------
+  function wrappedStats(mk) {
+    const d = state.data;
+    const inM = x => x.date.slice(0, 7) === mk;
+    const inc = d.incomes.filter(inM), exp = d.expenses.filter(x => inM(x) && isSpend(x)), goals = d.expenses.filter(x => inM(x) && x.goalId);
+    const [y, m] = mk.split('-').map(Number);
+    const prevKey = monthKey(new Date(y, m - 2, 1));
+    const prevSpent = sum(d.expenses.filter(x => x.date.slice(0, 7) === prevKey && isSpend(x)), x => x.amount);
+    const spent = sum(exp, x => x.amount), income = sum(inc, x => x.amount);
+    const byEnv = {}; exp.forEach(x => { byEnv[x.envelopeID] = (byEnv[x.envelopeID] || 0) + x.amount; });
+    const topId = Object.keys(byEnv).sort((a, b) => byEnv[b] - byEnv[a])[0];
+    const byWd = [0, 0, 0, 0, 0, 0, 0]; exp.forEach(x => { byWd[toDate(x.date).getDay()] += x.amount; });
+    const busiest = spent ? byWd.indexOf(Math.max(...byWd)) : -1;
+    const biggest = exp.slice().sort((a, b) => b.amount - a.amount)[0];
+    const now = new Date(), lastDay = (y === now.getFullYear() && m - 1 === now.getMonth()) ? now.getDate() - 1 : daysInMonth(y, m - 1);
+    let noSpend = 0;
+    for (let i = 1; i <= lastDay; i++) { const iso = y + '-' + pad(m) + '-' + pad(i); if (!exp.some(x => x.date === iso)) noSpend++; }
+    return { mk: mk, y: y, m: m, income: income, spent: spent, saved: income - spent, prevSpent: prevSpent, top: topId ? { env: envById(topId), amount: byEnv[topId] } : null,
+      busiest: busiest, biggest: biggest, tx: inc.length + exp.length + goals.length, goals: sum(goals, x => x.amount), noSpend: noSpend, streak: streakInfo().best,
+      empty: !inc.length && !exp.length && !goals.length };
+  }
+  function changeText(w) {
+    if (!w.prevSpent) return '';
+    const p = Math.round((w.spent - w.prevSpent) / w.prevSpent * 100);
+    return (p === 0 ? t('wr.same') : p > 0 ? t('wr.more', { p: p }) : t('wr.less', { p: -p })) + ' ' + t('wr.vsPrev');
+  }
+  function wrappedPanel() {
+    const now = new Date();
+    const months = [0, 1, 2, 3, 4, 5].map(k => monthKey(new Date(now.getFullYear(), now.getMonth() - k, 1)));
+    const mk = state.pf.mk || months[0];
+    const w = wrappedStats(mk);
+    const chips = '<div class="chips" style="margin-bottom:12px">' + months.map(k => {
+      const [y, m] = k.split('-').map(Number);
+      return '<button class="chip' + (k === mk ? ' on' : '') + '" data-action="wr-month" data-id="' + k + '">' + MONTHS_NOM[lang][m - 1].slice(0, 3) + ' ' + String(y).slice(2) + '</button>';
+    }).join('') + '</div>';
+    if (w.empty) return chips + '<div class="card muted">' + t('wr.empty') + '</div>';
+    const ch = changeText(w);
+    const cards = [
+      '<div class="wr-card wr-hero"><div class="small" style="opacity:.8">' + MONTHS_NOM[lang][w.m - 1] + ' ' + w.y + '</div>' +
+        '<div class="wr-big">' + amd(w.spent) + '</div><div>' + t('wr.spent') + (ch ? ' · ' + esc(ch) : '') + '</div></div>',
+      '<div class="wr-grid"><div class="wr-card"><span>' + t('wr.income') + '</span><b style="color:var(--green)">' + amd(w.income) + '</b></div>' +
+        '<div class="wr-card"><span>' + t('wr.saved') + '</span><b style="color:' + (w.saved >= 0 ? 'var(--accent)' : 'var(--red)') + '">' + amd(w.saved) + '</b></div>' +
+        '<div class="wr-card"><span>' + t('wr.tx') + '</span><b>' + w.tx + '</b></div>' +
+        '<div class="wr-card"><span>' + t('wr.noSpend') + '</span><b>' + w.noSpend + '</b></div></div>',
+      w.top ? '<div class="wr-card"><span>' + t('wr.topEnv') + '</span><b>' + esc((w.top.env ? w.top.env.icon + ' ' + envName(w.top.env) : '—')) + ' · ' + amd(w.top.amount) + '</b></div>' : '',
+      w.biggest ? '<div class="wr-card"><span>' + t('wr.biggest') + '</span><b>' + amd(w.biggest.amount) + (w.biggest.note ? ' · ' + esc(w.biggest.note) : '') + '</b></div>' : '',
+      w.busiest >= 0 ? '<div class="wr-card"><span>' + t('wr.busiest') + '</span><b>' + WEEK_FULL[lang][w.busiest] + '</b></div>' : '',
+      w.goals ? '<div class="wr-card"><span>' + t('wr.goals') + '</span><b>🎯 ' + amd(w.goals) + '</b></div>' : ''
+    ].join('');
+    return chips + cards + '<button class="btn btn-primary" style="margin-top:14px" data-action="wr-share">' + t('wr.share') + '</button>';
+  }
+
+  async function shareWrapped() {
+    const w = wrappedStats(state.pf.mk || monthKey(new Date()));
+    const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const g = c.getContext('2d');
+    const grad = g.createLinearGradient(0, 0, W, H); grad.addColorStop(0, '#1e3a8a'); grad.addColorStop(1, '#03061c');
+    g.fillStyle = grad; g.fillRect(0, 0, W, H);
+    try {
+      const logo = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = 'icon-192.png'; });
+      g.drawImage(logo, 80, 80, 120, 120);
+    } catch (e) {}
+    const font = (s, wgt) => wgt + ' ' + s + 'px -apple-system, "Noto Sans Armenian", "Segoe UI", sans-serif';
+    g.fillStyle = '#fff'; g.font = font(54, '700'); g.fillText('MyBudget', 230, 160);
+    g.fillStyle = '#34d399'; g.font = font(44, '600'); g.fillText(MONTHS_NOM[lang][w.m - 1] + ' ' + w.y, 80, 300);
+    const rows = [[t('wr.spent'), amd(w.spent)], [t('wr.income'), amd(w.income)], [t('wr.saved'), amd(w.saved)],
+      [t('wr.topEnv'), w.top && w.top.env ? envName(w.top.env) : '—'], [t('wr.noSpend'), String(w.noSpend)], ['🔥', t('streak.days', { n: w.streak })]];
+    let y = 420;
+    rows.forEach(r => {
+      g.fillStyle = 'rgba(255,255,255,.65)'; g.font = font(36, '500'); g.fillText(r[0], 80, y);
+      g.fillStyle = '#fff'; g.font = font(64, '700'); g.fillText(r[1], 80, y + 72); y += 150;
+    });
+    const ch = changeText(w);
+    if (ch) { g.fillStyle = '#93c5fd'; g.font = font(34, '500'); g.fillText(ch, 80, H - 70); }
+    const blob = await new Promise(res => c.toBlob(res, 'image/png'));
+    const file = new File([blob], 'MyBudget-' + w.mk + '.png', { type: 'image/png' });
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'MyBudget' }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  // ---------- Չեկի սկանավորում (Tesseract.js) ----------
+  function loadScript(src) {
+    return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  }
+  function downscale(file, max) {
+    return new Promise((res, rej) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const k = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        const g = c.getContext('2d'); g.filter = 'grayscale(1) contrast(1.3)'; g.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url); res(c);
+      };
+      img.onerror = rej; img.src = url;
+    });
+  }
+  function parseReceipt(text) {
+    const lines = text.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    const nums = s => (s.replace(/(\d)[\s',](?=\d{3}(?!\d))/g, '$1').match(/\d+(?:[.,]\d{1,2})?/g) || []).map(x => parseFloat(x.replace(',', '.')));
+    const KEY = /(ընդամենը|ընդհանուր|վճարման|վճարվ|total|sum|итого|всего|к оплате|сумма)/i;
+    let amount = 0;
+    for (let i = lines.length - 1; i >= 0 && !amount; i--) {
+      if (!KEY.test(lines[i])) continue;
+      let ns = nums(lines[i]).filter(n => n >= 10 && n < 10000000);
+      if (!ns.length && i + 1 < lines.length) ns = nums(lines[i + 1]).filter(n => n >= 10 && n < 10000000);
+      if (ns.length) amount = Math.max(...ns);
+    }
+    if (!amount) {
+      const all = lines.reduce((a, l) => a.concat(nums(l)), []).filter(n => n >= 10 && n < 5000000);
+      amount = all.length ? Math.max(...all) : 0;
+    }
+    const shop = (lines.find(l => /\p{L}{3,}/u.test(l)) || '').replace(/[^\p{L}\p{N}\s"«»'&.-]/gu, '').trim().slice(0, 40);
+    return { amount: Math.round(amount), shop: shop };
+  }
+  async function scanReceipt(file) {
+    const st = document.getElementById('receipt-status');
+    const set = (txt, cls) => { const el = document.getElementById('receipt-status'); if (el) { el.className = cls || 'hint'; el.textContent = txt; } };
+    if (!st) return;
+    set(t('ocr.loading'));
+    try {
+      if (!window.Tesseract) await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+      const img = await downscale(file, 1600);
+      const res = await window.Tesseract.recognize(img, 'hye+rus+eng', {
+        logger: m => { if (m.status === 'recognizing text') set(t('ocr.reading', { p: Math.round(m.progress * 100) })); }
+      });
+      const r = parseReceipt(res.data.text || '');
+      if (!r.amount) { set(t('ocr.notFound'), 'error'); return; }
+      formCur = 'AMD';
+      document.querySelectorAll('#exp-cur .chip').forEach(b => b.classList.toggle('on', b.dataset.id === 'AMD'));
+      const a = document.getElementById('exp-amount'); if (a) { a.value = String(r.amount); a.dispatchEvent(new Event('input', { bubbles: true })); }
+      const n = document.getElementById('exp-note'); if (n && !n.value && r.shop) n.value = r.shop;
+      set(t('ocr.found', { v: amd(r.amount) }), 'ok');
+    } catch (e) { set(t('ocr.failed'), 'error'); }
+  }
+
+  // ---------- Պանելներ (պատուհաններ) ----------
+  const PANELS = {
+    goals: ['goal.title', goalsPanel], recurring: ['rec.title', recurringPanel], debts: ['debt.title', debtsPanel],
+    challenges: ['ch.title', challengesPanel], advisor: ['adv.title', advisorPanel], wrapped: ['wr.title', wrappedPanel]
+  };
+  function openPanel(name, pf) { state.panel = name; state.pf = pf || {}; renderPanel(); }
+  function renderPanel() {
+    if (!state.panel || !PANELS[state.panel]) return;
+    const old = document.getElementById('panel-sheet'), top = old ? old.scrollTop : 0;
+    const p = PANELS[state.panel];
+    modal.innerHTML = '<div class="overlay"><div class="sheet tall" id="panel-sheet"><div class="sheet-head"><span style="width:70px"></span><b>' + t(p[0]) + '</b>' +
+      '<button class="link bold" data-action="close-modal" style="width:70px;text-align:right">' + t('m.close') + '</button></div>' + p[1]() + '</div></div>';
+    const sh = document.getElementById('panel-sheet'); if (sh) sh.scrollTop = top;
+  }
+  const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  function afterChange() { save(); checkBadges(); render(); renderPanel(); }
+
+  /** Նոր ֆունկցիաների կոճակների մշակում. վերադարձնում է true, եթե գործողությունը մշակվեց */
+  function featureAction(action, id, el) {
+    const d = state.data;
+    switch (action) {
+      case 'open-panel': closeModal(); openPanel(id); return true;
+      case 'tip-next': tipOffset++; render(); return true;
+      case 'checkin':
+        if (d.checkins.indexOf(todayISO()) < 0) d.checkins.push(todayISO());
+        d.checkins = d.checkins.slice(-400); save(); checkBadges(); render(); return true;
+      case 'env-daily': { const e = envById(id); if (e) { e.daily = !e.daily; save(); render(); } return true; }
+      case 'pick-cur': {
+        formCur = id;
+        document.querySelectorAll('#' + el.dataset.for + '-cur .chip').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+        if (el.dataset.for === 'inc') updateIncomePreview(); else updateExpenseInfo();
+        return true;
+      }
+      // Նպատակներ
+      case 'goal-emoji': state.pf.emoji = id; state.pf.name = val('goal-name'); state.pf.target = val('goal-target'); renderPanel(); return true;
+      case 'goal-create': {
+        const name = val('goal-name').trim(), target = parseAmount(val('goal-target'));
+        if (!name || !target) { state.pf.err = 'goal.badInput'; state.pf.name = name; state.pf.target = val('goal-target'); renderPanel(); return true; }
+        d.goals.push({ id: uid(), name: name, emoji: state.pf.emoji || '🎯', target: Math.round(target), deadline: val('goal-deadline') || '', created: Date.now() });
+        state.pf = {}; afterChange(); return true;
+      }
+      case 'goal-add': state.pf.addTo = id; renderPanel(); setTimeout(() => { const a = document.getElementById('goal-amt'); if (a) a.focus(); }, 50); return true;
+      case 'goal-add-cancel': state.pf.addTo = null; renderPanel(); return true;
+      case 'goal-add-save': {
+        const amount = parseAmount(val('goal-amt')), g = d.goals.find(x => x.id === id), envId = val('goal-env');
+        if (!amount || !g || !envById(envId)) return true;
+        d.expenses.push({ id: uid(), amount: Math.round(amount), note: '🎯 ' + g.name, date: todayISO(), envelopeID: envId, goalId: g.id, createdAt: Date.now() });
+        state.pf.addTo = null; afterChange(); return true;
+      }
+      case 'goal-del':
+        confirmDialog(t('goal.delTitle'), t('goal.delMsg'), t('m.delete'), () => {
+          d.goals = d.goals.filter(g => g.id !== id); d.expenses = d.expenses.filter(x => x.goalId !== id);
+          openPanel('goals'); afterChange();
+        }); return true;
+      // Կրկնվող
+      case 'rec-create': {
+        const name = val('rec-name').trim(), amount = parseAmount(val('rec-amount'));
+        if (!name || !amount) { state.pf.err = 'goal.badInput'; renderPanel(); return true; }
+        d.recurring.push({ id: uid(), name: name, amount: Math.round(amount), envelopeID: val('rec-env'), day: parseInt(val('rec-day'), 10) || 1, paidMonth: '' });
+        state.pf = {}; afterChange(); return true;
+      }
+      case 'rec-pay': payRecurring(id); checkBadges(); render(); renderPanel(); toast('✓ ' + t('rec.paid')); return true;
+      case 'rec-del':
+        confirmDialog(t('rec.delTitle'), t('rec.delMsg'), t('m.delete'), () => { d.recurring = d.recurring.filter(r => r.id !== id); openPanel('recurring'); afterChange(); });
+        return true;
+      // Պարտքեր
+      case 'debt-type': state.pf.type = id; renderPanel(); return true;
+      case 'debt-create': {
+        const person = val('debt-person').trim(), amount = parseAmount(val('debt-amount'));
+        if (!person || !amount) { state.pf.err = 'debt.badInput'; renderPanel(); return true; }
+        d.debts.push({ id: uid(), type: state.pf.type || 'lent', person: person, amount: Math.round(amount), note: val('debt-note').trim(), due: val('debt-due') || '', settled: false, created: Date.now() });
+        state.pf = { type: state.pf.type }; afterChange(); return true;
+      }
+      case 'debt-settle': { const x = d.debts.find(y => y.id === id); if (x) { x.settled = true; x.settledAt = todayISO(); } afterChange(); return true; }
+      case 'debt-del':
+        confirmDialog(t('debt.delTitle'), '', t('m.delete'), () => { d.debts = d.debts.filter(x => x.id !== id); openPanel('debts'); afterChange(); });
+        return true;
+      // Խորհրդատու
+      case 'adv-check': { const p = parseAmount(val('adv-price')); state.pf = { price: p ? Math.round(p) : 0, what: val('adv-what').trim() }; renderPanel(); return true; }
+      case 'adv-goal': openPanel('goals', { name: state.pf.what || '', target: String(state.pf.price || '') }); return true;
+      // Ամփոփում
+      case 'wr-month': state.pf.mk = id; renderPanel(); return true;
+      case 'wr-share': shareWrapped().catch(() => toast(t('err.generic'))); return true;
+    }
+    return false;
   }
 
   // ---------- Իրադարձություններ ----------
@@ -1467,6 +2270,7 @@
 
     const el = e.target.closest('[data-action]'); if (!el || el.disabled) return;
     const id = el.dataset.id;
+    if (state.data && featureAction(el.dataset.action, id, el)) return;
     switch (el.dataset.action) {
       case 'tab': state.tab = id; state.selecting = false; state.selected.clear(); state.flash = {}; render(); try { window.scrollTo(0, 0); } catch (err) {} break;
       case 'lang': setLang(id); break;
@@ -1598,6 +2402,7 @@
 
   document.addEventListener('change', e => {
     if (e.target.id === 'avatar-input' && e.target.files && e.target.files[0]) loadAvatar(e.target.files[0]);
+    if (e.target.id === 'receipt-input' && e.target.files && e.target.files[0]) scanReceipt(e.target.files[0]);
   });
 
   document.addEventListener('keydown', e => {
