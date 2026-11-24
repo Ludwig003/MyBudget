@@ -2,7 +2,7 @@
 <html lang="hy">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#4f46e5">
 <title>MyBudget</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -30,6 +30,15 @@
     }
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  /* Խոշորացման արգելք. կրկնակի հպումով խոշորացում չկա */
+  html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  /* iOS-ը ավտոմատ խոշորացնում է 16px-ից փոքր դաշտերը, ուստի նվազագույնը 16px է */
+  input, select, textarea { font-size: max(16px, 1em); }
+
+  /* Մեկնարկային վիդեո */
+  #splash { position: fixed; inset: 0; z-index: 100; background: #03061c; display: flex; align-items: center; justify-content: center; transition: opacity .45s ease; }
+  #splash video { width: 100%; height: 100%; object-fit: contain; background: #03061c; }
+  #splash.hide { opacity: 0; pointer-events: none; }
   html, body { margin: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Noto Sans Armenian", "Segoe UI", Roboto, sans-serif;
     font-size: 16px; line-height: 1.35; }
@@ -193,6 +202,43 @@
 </style>
 </head>
 <body>
+<div id="splash" aria-hidden="true">
+  <video id="splash-video" src="mybudget_logo.mp4" muted playsinline webkit-playsinline autoplay preload="auto" disablepictureinpicture></video>
+</div>
+<script>
+  // Մեկնարկային վիդեո. ցույց է տրվում միայն հավելվածը/կայքը բացելիս (մեկ անգամ յուրաքանչյուր բացման ժամանակ)
+  (function () {
+    var splash = document.getElementById('splash');
+    var video = document.getElementById('splash-video');
+    var seen = false, reduce = false;
+    try { seen = sessionStorage.getItem('bb_splash') === '1'; } catch (e) {}
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (seen || reduce) { splash.parentNode.removeChild(splash); return; }
+    try { sessionStorage.setItem('bb_splash', '1'); } catch (e) {}
+    var done = false;
+    function hide() {
+      if (done) return; done = true;
+      splash.classList.add('hide');
+      setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 500);
+    }
+    video.addEventListener('ended', hide);
+    video.addEventListener('error', hide);
+    splash.addEventListener('click', hide);               // հպումով կարելի է բաց թողնել
+    setTimeout(hide, 7500);                               // ապահովության համար
+    var p = video.play && video.play();
+    if (p && p.catch) p.catch(function () { setTimeout(hide, 800); });   // եթե բրաուզերը չթույլատրի ավտոմատ նվագարկումը
+  })();
+
+  // Մատներով (pinch) խոշորացման արգելք (iOS Safari-ն անտեսում է user-scalable=no-ն)
+  (function () {
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (ev) {
+      document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false });
+    });
+    document.addEventListener('touchmove', function (e) {
+      if (e.touches && e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+  })();
+</script>
 <div id="root"></div>
 <div id="modal"></div>
 <div id="toast" class="toast"></div>
